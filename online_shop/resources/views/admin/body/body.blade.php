@@ -68,3 +68,8 @@
 				<!-- /.content -->
 			</div>
 @endsection
+@section('customJs')
+	<script>
+		console.log('Hello');
+	</script>
+@endsection

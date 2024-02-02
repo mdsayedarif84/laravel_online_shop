@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\Category\CategoryController;
+use App\Http\Controllers\Admin\TempImage\TempImagesController;
+use Illuminate\Http\Request;
 
 
 /*
@@ -28,5 +31,24 @@ Route::group(['prefix'=>'admin'],function(){
     Route::group(['middleware' => 'admin.auth'],function(){
         Route::get('/dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
         Route::get('/logout', [HomeController::class, 'logout'])->name('admin.logout');
+        
+        //Cateogry Routes
+        Route::get('/category/list', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
+
+        //temp-images.create
+
+        Route::get('/getSlug',function(Request $request){
+            $slug = '';
+            if(!empty($request->title)){
+               $slug = Str::slug($request->title);
+            }
+            return response()->json([
+                'status'=> true,
+                'slug'=> $slug,
+            ]);
+        })->name('getSlug');
     });
 });
