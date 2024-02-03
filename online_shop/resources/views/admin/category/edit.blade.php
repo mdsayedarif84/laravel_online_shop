@@ -1,6 +1,6 @@
 @extends('admin.dashboard.dashboard')
 @section('title')
-    Create Category
+    Edit Category
 @endsection
 @section('body')
 <div class="content-wrapper">
@@ -29,14 +29,14 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="name">Name</label>
-                                                <input type="text"  name="name" id="name" class="form-control" placeholder="Name">	
+                                                <input type="text"  name="name" id="name" class="form-control" value="{{$category->name}}">	
                                                 <p></p>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="slug">Slug</label>
-                                                <input type="text" readonly name="slug" id="slug" class="form-control" placeholder="Slug">
+                                                <input type="text" readonly name="slug" id="slug" class="form-control"  value="{{$category->slug}}">
                                                 <p></p>	
                                             </div>
                                         </div>
@@ -47,15 +47,14 @@
                                             <div class="mb-3">
                                                 <label for="status">Status</label>
                                                 <select name="status" id="status" class="form-control">
-                                                    <option value="1">Active</option>
-                                                    <option value="0">Block</option>
+                                                    <option {{ ($category->status == 1) ?'selected' : '' }} value="1">Active</option>
+                                                    <option {{ ($category->status == 0) ?'selected' : '' }} value="0">Block</option>
                                                 </select>	
                                             </div>
                                         </div>
                                         <div class="col-md-3"></div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-2"></div>
                                         <div class="col-md-8">
                                             <div class="mb-3">
                                                 <input type="hidden" id="image_id" name="image_id" value="">
@@ -67,12 +66,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2"></div>
+                                        @if(!empty($category->image))
+                                            <div class="col-md-4">
+                                                <img width="250" height="250" src="{{asset('uploads/category/thumb/'.$category->image)}}">
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>							
                             </div>
                             <div class="pb-5 pt-3">
-                                <button type="submit" class="btn btn-primary">Create</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
                                 <a href="{{route('categories.index')}}" class="btn btn-outline-dark ml-3">Cancel</a>
                             </div>
                         </form>
