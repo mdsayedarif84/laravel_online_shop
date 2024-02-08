@@ -9,10 +9,10 @@ Create Category
       <div class="container-fluid my-2">
          <div class="row mb-2">
             <div class="col-sm-6">
-               <h1>Create Category</h1>
+               <h1>Create Sub Category</h1>
             </div>
             <div class="col-sm-6 text-right">
-               <a href="{{route('categories.index')}}" class="btn btn-primary">Category List</a>
+               <a href="subcategory.html" class="btn btn-primary">Back</a>
             </div>
          </div>
       </div>
@@ -22,10 +22,24 @@ Create Category
    <section class="content">
       <!-- Default box -->
       <div class="container-fluid">
-         <form action="" method="post" id="categoryForm" name="categoryForm">
+         <form action="" method="post" name="subCategoryForm" id="subCategoryForm">
             <div class="card">
                <div class="card-body">
                   <div class="row">
+                     <div class="col-md-12">
+                        <div class="mb-3">
+                           <label for="name">Category</label>
+                           <select name="category" id="category" class="form-control">
+                              <option value="">Select Category</option>
+                              @if($categories->isNotEmpty())
+                              @foreach($categories as $category )
+                              <option value="{{$category->id}}">{{$category->name}}</option>
+                              @endforeach
+                              @endif
+                           </select>
+                           <p></p>
+                        </div>
+                     </div>
                      <div class="col-md-6">
                         <div class="mb-3">
                            <label for="name">Name</label>
@@ -47,9 +61,11 @@ Create Category
                         <div class="mb-3">
                            <label for="status">Status</label>
                            <select name="status" id="status" class="form-control">
+                              <option>Selet Status</option>
                               <option value="1">Active</option>
                               <option value="0">Block</option>
                            </select>
+                           <p></p>
                         </div>
                      </div>
                      <div class="col-md-3"></div>
@@ -73,7 +89,7 @@ Create Category
             </div>
             <div class="pb-5 pt-3">
                <button type="submit" class="btn btn-primary">Create</button>
-               <a href="{{route('categories.index')}}" class="btn btn-outline-dark ml-3">Cancel</a>
+               <a href="subcategory.html" class="btn btn-outline-dark ml-3">Cancel</a>
             </div>
          </form>
       </div>
@@ -84,28 +100,38 @@ Create Category
 @endsection
 @section('customJs')
 <script>
-$("#categoryForm").submit(function(event) {
+$("#subCategoryForm").submit(function(event) {
    event.preventDefault();
-   var element = $(this);
+   var element = $("#subCategoryForm");
    // $("button[type=submit)]").prop('disabled',true);
    $.ajax({
-      url: '{{route("categories.store")}}',
+      url: '{{route("sub-categories.store")}}',
       type: 'POST',
       data: element.serializeArray(),
       dataType: 'json',
       success: function(response) {
          // $("button[type=submit)]").prop('disabled',false);
          if (response["status"] == true) {
-            window.location.href = '{{ route("categories.index") }}';
-            $("#name").removeClass('is-invalid')
-               .siblings('p')
-               .removeClass('invalid-feedback').html("");
+            // window.location.href = '{{ route("categories.index") }}';
+            // $("#name").removeClass('is-invalid')
+            //    .siblings('p')
+            //    .removeClass('invalid-feedback').html("");
 
-            $("#slug").removeClass('is-invalid')
-               .siblings('p')
-               .removeClass('invalid-feedback').html("");
+            // $("#slug").removeClass('is-invalid')
+            //    .siblings('p')
+            //    .removeClass('invalid-feedback').html("");
+            
          } else {
             var errors = response['errors'];
+            if (errors['category']) {
+               $("#category").addClass('is-invalid')
+                  .siblings('p')
+                  .addClass('invalid-feedback').html(errors['category']);
+            } else {
+               $("#category").removeClass('is-invalid')
+                  .siblings('p')
+                  .removeClass('invalid-feedback').html("");
+            }
             if (errors['name']) {
                $("#name").addClass('is-invalid')
                   .siblings('p')
@@ -132,7 +158,6 @@ $("#categoryForm").submit(function(event) {
       }
    })
 });
-
 $("#name").change(function() {
    element = $(this);
    // $("button[type=submit)]").prop('disabled',true);
@@ -150,29 +175,6 @@ $("#name").change(function() {
          }
       }
    });
-});
-
-Dropzone.autoDiscover = false;
-const dropzone = $("#image").dropzone({
-   init: function() {
-      this.on('addedfile', function(file) {
-         if (this.files.length > 1) {
-            this.removeFile(this.files[0]);
-         }
-      });
-   },
-   url: "{{ route('temp-images.create') }}",
-   maxFiles: 1,
-   paramName: 'image',
-   addRemoveLinks: true,
-   acceptedFiles: "image/jpeg,image/png,image/gif",
-   headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-   },
-   success: function(file, response) {
-      $("#image_id").val(response.image_id);
-      // console.log(response)
-   }
 });
 </script>
 @endsection

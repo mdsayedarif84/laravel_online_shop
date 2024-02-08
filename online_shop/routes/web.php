@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\Category\CategoryController;
+use App\Http\Controllers\Admin\Category\SubCategoryController;
 use App\Http\Controllers\Admin\TempImage\TempImagesController;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,14 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/category/list', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
         Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-        Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');
+        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('category.edit');
+        Route::put('/categories/{id}/update', [CategoryController::class, 'update'])->name('category.update');
+        Route::delete('/categories/{category}', [CategoryController::class, 'destory'])->name('categories.destory');
+
+        //sub cateogry route
+        Route::get('/sub-categories/create', [SubCategoryController::class, 'create'])->name('sub-categories.create');
+        Route::post('/sub-categories/store', [SubCategoryController::class, 'store'])->name('sub-categories.store');
+
 
                 //temp-images.create
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');

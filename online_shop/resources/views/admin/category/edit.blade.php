@@ -92,8 +92,8 @@
             var element = $(this);
             // $("button[type=submit)]").prop('disabled',true);
             $.ajax({
-                url: '{{route("categories.store")}}',
-                type:'POST',
+                url: '{{route("category.update",$category->id)}}',
+                type:'put',
                 data: element.serializeArray(),
                 dataType:'json',
                 success: function(response){
@@ -108,6 +108,9 @@
                                     .siblings('p')
                                     .removeClass('invalid-feedback').html("");
                     }else{
+                        if(response['notFound']== true){
+                            window.location.href='{{ route("categories.index") }}';
+                        }
                         var errors =    response['errors'];
                         if(errors['name']){
                             $("#name").addClass('is-invalid')
