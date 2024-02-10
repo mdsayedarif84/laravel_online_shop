@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\Category\CategoryController;
 use App\Http\Controllers\Admin\Category\SubCategoryController;
 use App\Http\Controllers\Admin\TempImage\TempImagesController;
+use App\Http\Controllers\Admin\Brand\BrandController;
+use App\Http\Controllers\Admin\Product\ProductController;
 use Illuminate\Http\Request;
 
 
@@ -48,6 +50,14 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/sub-categories/{id}/edit', [SubCategoryController::class, 'edit'])->name('sub-categories.edit');
         Route::put('/sub-categories/{id}/update', [SubCategoryController::class, 'update'])->name('sub-categories.update');
         Route::delete('/sub-categories/{id}/destory', [SubCategoryController::class, 'destory'])->name('sub-categories.destory');
+
+        //Brand 
+        Route::get('/brand/create', [BrandController::class, 'create'])->name('brand.create');
+        Route::post('/brand/store', [BrandController::class, 'store'])->name('brand.store');
+        Route::get('/brand/list', [BrandController::class, 'index'])->name('brand.list');
+        Route::get('/brand/{id}/list', [BrandController::class, 'edit'])->name('brand.edit');
+        Route::put('/brand/{id}/update', [BrandController::class, 'update'])->name('brand.update');
+        Route::delete('/brand/{id}/destory', [BrandController::class, 'destory'])->name('brand.destory');
 
 
 
