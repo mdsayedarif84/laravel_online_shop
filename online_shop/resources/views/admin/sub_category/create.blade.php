@@ -32,9 +32,9 @@ Create Category
                            <select name="category" id="category" class="form-control">
                               <option value="">Select Category</option>
                               @if($categories->isNotEmpty())
-                              @foreach($categories as $category )
-                              <option value="{{$category->id}}">{{$category->name}}</option>
-                              @endforeach
+                                 @foreach($categories as $category )
+                                    <option value="{{$category->id}}">{{$category->name}}</option>
+                                 @endforeach
                               @endif
                            </select>
                            <p></p>

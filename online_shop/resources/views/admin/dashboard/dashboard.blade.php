@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="{{asset('adminAsset/plugins/fontawesome-free/css/all.min.css')}}">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="{{asset('adminAsset/css/adminlte.min.css')}}">
+	<link rel="stylesheet" href="{{asset('adminAsset/plugins/summernote/summernote-bs4.min.css')}}">
 	<link rel="stylesheet" href="{{asset('adminAsset/plugins/dropzone/min/dropzone.min.css')}}">
 
 	<link rel="stylesheet" href="{{asset('adminAsset/css/custom.css')}}">
@@ -44,11 +45,12 @@
 		<!-- jQuery -->
 		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" ></script> -->
 		<script src="{{asset('adminAsset/plugins/jquery/jquery.min.js')}}"></script>
-		
 		<!-- Bootstrap 4 -->
 		<script src="{{asset('adminAsset/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 		<!-- AdminLTE App -->
 		<script src="{{asset('adminAsset/js/adminlte.min.js')}}"></script>
+		<!-- Summernote -->
+		<script src="{{asset('adminAsset/plugins/summernote/summernote-bs4.min.js')}}"></script>
 		<script src="{{asset('adminAsset/plugins/dropzone/min/dropzone.min.js')}}"></script>
 		<!-- AdminLTE for demo purposes -->
 		<script src="{{asset('adminAsset/js/demo.js')}}"></script>
@@ -59,6 +61,28 @@
 			}
 			});
 		</script>
+		<script>
+            Dropzone.autoDiscover = false;    
+            $(function () {
+                // Summernote
+                $('.summernote').summernote({
+                    height: '300px'
+                });
+               
+                const dropzone = $("#image").dropzone({ 
+                    url:  "create-product.html",
+                    maxFiles: 5,
+                    addRemoveLinks: true,
+                    acceptedFiles: "image/jpeg,image/png,image/gif",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }, success: function(file, response){
+                        $("#image_id").val(response.id);
+                    }
+                });
+
+            });
+        </script>
 		@yield('customJs')
 	</body>
 </html>
