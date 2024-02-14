@@ -9,6 +9,8 @@ use App\Models\Category;
 use App\Models\TempImage;
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\ProductImage;
+use App\Models\Product_Image;
 use File;
 use Image;
 
@@ -23,59 +25,82 @@ class ProductController extends Controller
         $data['brands']     =   $brands;
         return view('admin.product.create',$data);
     }
-    public function store(){
+    public function store(Request $request){
+        // dd($request->image_array);
+        // exit();
         $rules= [
             'title'=>'required',
-            'slug'=>'required',
+            'slug'=>'required|unique:products',
             'price'=>'required|numeric',
-            'sku'=>'required',
+            'sku'=>'required|unique:products',
             'track_qty'=>'required|in:Yes, NO',
             'category'=>'required|numeric',
             'is_featured'=>'required|in:Yes, NO',
         ];
         [
-            'name.required' => 'Enter Your Name!',
+            'title.required' => 'Enter Your Name!',
             'slug.required' => 'Input Correct slug & unique!',
         ];
-        if(!empty($request->track_qty) && $request->track_qty == 'Yes'){
+        if(!empty( $request->track_qty ) && $request->track_qty == 'Yes'){
             $rules['qty'] = 'required|numeric';
         };
         $validator = Validator::make($request->all(),$rules);
-        
         if($validator->passes()){
-            $product          =   new Product();
-            $product->name    =   $request->name;
-            $product->slug    =   $request->slug;
-            $product->status  =   $request->status;
+            $product                =   new Product();
+            $product->title         =   $request->title;
+            $product->slug          =   $request->slug;
+            $product->description   =   $request->description;
+            $product->price         =   $request->price;
+            $product->compare_price =   $request->compare_price;
+            $product->sku           =   $request->sku;
+            $product->barcode       =   $request->barcode;
+            $product->track_qty     =   $request->track_qty;
+            $product->qty           =   $request->qty;
+            $product->status        =   $request->status;
+            $product->category_id   =   $request->category;
+            $product->sub_category_id  =   $request->sub_category;
+            $product->brand_id      =   $request->brand_id;
+            $product->is_featured   =   $request->is_featured;
             $product->save();
-            
-            // Save Image
-            if( !empty($request->image_id)){
-                $tempImage  =   TempImage::find($request->image_id);
-                $extArray   =   explode('.',$tempImage->name);
-                $ext        =   last($extArray);
 
-                $newImageName=  $category->id.'.'.$ext;
-                $sPath      =   public_path().'/temp/'.$tempImage->name;
-                $dPath      =   public_path().'/uploads/category/'.$newImageName;
-                File::copy($sPath, $dPath);
+            //Save Gallery Pics
+            if(!empty($request->image_array)){
+                foreach($request->image_array as $tem_img_id){
+                    $tempImgInfo     =   TempImage::find($tem_img_id);
+                    $extArray       =   explode('.',$tempImgInfo->name);// like name 1707459095
+                    $ext            =   last($extArray); // like as jpg,png jpeg,git etc
+                    $productImage   =   new Product_Image();
+                    $productImage->product_id   =   $product->id;
+                    $productImage->image        =   'NULL';
+                    $productImage->save();
 
-                //generated Image Thumbnail
-                $dPath      =   public_path().'/uploads/category/thumb/'.$newImageName;
-                $img   =   Image::make($sPath );
-                // $img->resize(450, 600);
-                $img->fit(450, 600, function ($constraint) {
-                    $constraint->upsize();
-                });
-                $img->save($dPath );
+                    $imageName      =   $product->id.'-'.$productImage->id.'-'.time().'.'.$ext;
+                    $productImage->image        =   $imageName;
+                    $productImage->save();
 
-                $category->image  =   $newImageName;
-                $category->save();
+                    //Generate Product Thumbnail// Large image
+                    $sPath      =   public_path().'/temp/'.$tempImgInfo->name;
+                    $dPath      =   public_path().'/uploads/product/large/'.$tempImgInfo->name;
+                    $img   =   Image::make($sPath );
+                    // $img->resize(450, 600);
+                    $img->resize(1400, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save($dPath );
+
+                    //small image
+                    $dPath      =   public_path().'/uploads/product/small/'.$tempImgInfo->name;
+                    $img   =   Image::make($sPath );
+                    // $img->resize(450, 600);
+                    $img->fit(300, 300);
+                    $img->save($dPath );
+                }
             }
-            $request->session()->flash('success','Category Added  Successfully');
+         
+            $request->session()->flash('success','Product Added  Successfully');
             return response()->json([
                 'status'=> true,
-                'errors'=>"Category Added  Successfully"
+                'success'=>"Product Added  Successfully"
             ]);
         }else{
             return response()->json([
