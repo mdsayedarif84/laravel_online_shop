@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\TempImage\TempImagesController;
 use App\Http\Controllers\Admin\Brand\BrandController;
 use App\Http\Controllers\Admin\Product\ProductController;
 use App\Http\Controllers\Admin\Product\ProductSubCategoryController;
+use App\Http\Controllers\Admin\Product\ProductImageController;
 use Illuminate\Http\Request;
 
 
@@ -56,16 +57,21 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/brand/create', [BrandController::class, 'create'])->name('brand.create');
         Route::post('/brand/store', [BrandController::class, 'store'])->name('brand.store');
         Route::get('/brand/list', [BrandController::class, 'index'])->name('brand.list');
-        Route::get('/brand/{id}/list', [BrandController::class, 'edit'])->name('brand.edit');
+        Route::get('/brand/{id}/edit', [BrandController::class, 'edit'])->name('brand.edit');
         Route::put('/brand/{id}/update', [BrandController::class, 'update'])->name('brand.update');
         Route::delete('/brand/{id}/destory', [BrandController::class, 'destory'])->name('brand.destory');
 
         //Prouduct
         Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
         Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
-
+        Route::get('/products/list', [ProductController::class, 'list'])->name('products.list');
+        Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
+        Route::put('/product/{id}/update', [ProductController::class, 'update'])->name('product.update');
 
         Route::get('/product-subCategories', [ProductSubCategoryController::class, 'index'])->name('product-subCategories.index');
+        Route::post('/product-image/update', [ProductImageController::class, 'update'])->name('product-image.update');
+        Route::delete('/product-image/delete', [ProductImageController::class, 'destory'])->name('product-image.destory');
+
 
 
 

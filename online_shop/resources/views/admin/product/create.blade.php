@@ -1,6 +1,6 @@
 @extends('admin.dashboard.dashboard')
 @section('title')
-Create Category
+Create Product
 @endsection
 @section('body')
 <div class="content-wrapper">
@@ -12,7 +12,7 @@ Create Category
                <h1>Create Product</h1>
             </div>
             <div class="col-sm-6 text-right">
-               <a href="products.html" class="btn btn-primary">Back</a>
+               <a href="{{ route('products.list') }}" class="btn btn-primary">Products List</a>
             </div>
          </div>
       </div>
@@ -24,7 +24,7 @@ Create Category
       <form action="" method="post" name="productForm" id="productForm">
          <div class="container-fluid">
             <div class="row">
-               <div class="col-md-8">
+               <div class="col-md-7">
                   <div class="card mb-3">
                      <div class="card-body">
                         <div class="row">
@@ -63,31 +63,7 @@ Create Category
                      </div>
                   </div>
                   <div class="row" id="product-gallery"></div>
-                  <div class="card mb-3">
-                     <div class="card-body">
-                        <h2 class="h4 mb-3">Pricing</h2>
-                        <div class="row">
-                           <div class="col-md-12">
-                              <div class="mb-3">
-                                 <label for="price">Price</label>
-                                 <input type="text" name="price" id="price" class="form-control" placeholder="Price">
-                                 <p class="error"></P>
-                              </div>
-                           </div>
-                           <div class="col-md-12">
-                              <div class="mb-3">
-                                 <label for="compare_price">Compare at Price</label>
-                                 <input type="text" name="compare_price" id="compare_price" class="form-control"
-                                    placeholder="Compare Price">
-                                 <p class="text-muted mt-3">
-                                    To show a reduced price, move the product’s original price into Compare at price. Enter
-                                    a lower value into Price.
-                                 </p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
+                  
                   <div class="card mb-3">
                      <div class="card-body">
                         <h2 class="h4 mb-3">Inventory</h2>
@@ -124,7 +100,7 @@ Create Category
                      </div>
                   </div>
                </div>
-               <div class="col-md-4">
+               <div class="col-md-5">
                   <div class="card mb-3">
                      <div class="card-body">
                         <h2 class="h4 mb-3">Product status</h2>
@@ -186,12 +162,36 @@ Create Category
                         </div>
                      </div>
                   </div>
+                  <div class="card mb-3">
+                     <div class="card-body">
+                        <h2 class="h4 mb-3">Pricing</h2>
+                        <div class="row">
+                           <div class="col-md-12">
+                              <div class="mb-3">
+                                 <label for="price">Price</label>
+                                 <input type="text" name="price" id="price" class="form-control" placeholder="Price">
+                                 <p class="error"></P>
+                              </div>
+                           </div>
+                           <div class="col-md-12">
+                              <div class="mb-3">
+                                 <label for="compare_price">Compare at Price</label>
+                                 <input type="text" name="compare_price" id="compare_price" class="form-control"
+                                    placeholder="Compare Price">
+                                 <p class="text-muted mt-3">
+                                    To show a reduced price, move the product’s original price into Compare at price. Enter
+                                    a lower value into Price.
+                                 </p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
                </div>
             </div>
-
             <div class="pb-5 pt-3">
                <button type="submit" class="btn btn-primary">Create</button>
-               <a href="products.html" class="btn btn-outline-dark ml-3">Cancel</a>
+               <a href="{{route('products.list')}}" class="btn btn-outline-dark ml-3">Cancel</a>
             </div>
          </div>
       </form>
@@ -214,7 +214,9 @@ $("#productForm").submit(function(event) {
       success: function(response) {
          //  $("button[type=submit)]").prop('disabled',false);
          if (response["status"] == true) {
-            
+            window.location.href="{{route('products.list')}}";
+            $(".error").removeClass('invalid-feedback').html('');
+            $("input[type='text'],select,input[type='number']").removeClass('is-invalid');
          } else {
             var errors = response['errors'];
             $(".error").removeClass('invalid-feedback').html('');
@@ -255,13 +257,6 @@ $("#category").change(function() {
 
 Dropzone.autoDiscover = false;
 const dropzone = $("#image").dropzone({
-   // init: function() {
-   //    this.on('addedfile', function(file) {
-   //       if (this.files.length > 1) {
-   //          this.removeFile(this.files[0]);
-   //       }
-   //    });
-   // },
    url: "{{ route('temp-images.create') }}",
    maxFiles: 10,
    paramName: 'image',
@@ -273,20 +268,26 @@ const dropzone = $("#image").dropzone({
    success: function(file, response) {
       // $("#image_id").val(response.image_id);
       // console.log(response)
-      var html   =`<div class="col-md-3">
+      var html   =`<div class="col-md-3" id="image-row-${response.image_id}">
                      <div class="card" >
                      <input type="hidden" name="image_array[]" value="${response.image_id}">
                      <img src="${response.imagePath}" class="card-img-top" alt="...">
                      <div class="card-body">
                         <h5 class="card-title">Card title</h5>
                         
-                        <a href="#" class="btn btn-danger">Delete</a>
+                        <a href="javascript:void(0)" onclick="deleteImage(${response.image_id})" class="btn btn-danger">Delete</a>
                      </div>
                   </div>
                   </div>`;
                   $('#product-gallery').append(html);
+   },
+   complete:function(file){
+      this.removeFile(file);
    }
 });
+function deleteImage(id){
+      $('#image-row-'+id).remove();
+   }
 //getTitleSlug
 $("#title").change(function() {
    element = $(this);

@@ -61,8 +61,8 @@ Create Category
                         <div class="mb-3">
                            <label for="status">Status</label>
                            <select name="status" id="status" class="form-control">
-                              <option {{ ($subCategory->status == 1) ?'selected' : '' }}  value="1">Active</option>
-                              <option {{ ($subCategory->status == 0) ?'selected' : '' }}  value="0">Block</option>
+                              <option {{ ($subCategory->status == 1) ?'selected' : '' }} value="1">Active</option>
+                              <option {{ ($subCategory->status == 0) ?'selected' : '' }} value="0">Block</option>
                            </select>
                            <p></p>
                         </div>
