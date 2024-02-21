@@ -114,9 +114,6 @@
 					type:'delete',
 					data: {},
 					dataType:'json',
-					headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            	},
 					success: function(response){
 							// $("button[type=submit)]").prop('disabled',false);
 						if(response["status"]){

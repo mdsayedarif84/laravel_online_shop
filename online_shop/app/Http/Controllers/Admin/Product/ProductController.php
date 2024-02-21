@@ -17,6 +17,33 @@ use Image;
 
 class ProductController extends Controller
 {
+    public function validateRules($request){
+        $rules= [
+            'title'=>'required',
+            'slug'=>'required|unique:products',
+            'price'=>'required|numeric',
+            'sku'=>'required|unique:products',
+            'track_qty'=>'required|in:Yes, NO',
+            'category'=>'required|numeric',
+            'is_featured'=>'required|in:Yes, NO',
+        ];
+        $messages = [
+            'title.required' => 'The title field is Needable.',
+            'slug.required' => 'The slug field is required.',
+            'slug.unique' => 'The slug has already been taken.',
+            'price.required' => 'The price field is required.',
+            'price.numeric' => 'The price must be a number.',
+            'sku.required' => 'The SKU field is required.',
+            'sku.unique' => 'The SKU has already been taken.',
+            'track_qty.required' => 'The track quantity field is required.',
+            'track_qty.in' => 'The track quantity must be either Yes or NO.',
+            'category.required' => 'The category field is required.',
+            'category.numeric' => 'The category must be a number.',
+            'is_featured.required' => 'The is featured field is required.',
+            'is_featured.in' => 'The is featured field must be either Yes or NO.',
+        ];
+        return ['rules' => $rules, 'messages' => $messages];
+    }
     public function create(){
         $data               =   [];
         $categories         =   Category::orderBy('name','desc')->get();
@@ -28,23 +55,14 @@ class ProductController extends Controller
     public function store(Request $request){
         // dd($request->image_array);
         // exit();
-        $rules= [
-            'title'=>'required',
-            'slug'=>'required|unique:products',
-            'price'=>'required|numeric',
-            'sku'=>'required|unique:products',
-            'track_qty'=>'required|in:Yes, NO',
-            'category'=>'required|numeric',
-            'is_featured'=>'required|in:Yes, NO',
-        ];
-        [
-            'title.required' => 'Enter Your Name!',
-            'slug.required' => 'Input Correct slug & unique!',
-        ];
+        $validationData = $this->validateRules($request);
+        $rules = $validationData['rules'];
+        $messages = $validationData['messages'];
+    
         if(!empty( $request->track_qty ) && $request->track_qty == 'Yes'){
             $rules['qty'] = 'required|numeric';
         };
-        $validator = Validator::make($request->all(),$rules);
+        $validator = Validator::make($request->all(),$rules,$messages);
         if($validator->passes()){
             $product                =   new Product();
             $product->title         =   $request->title;
@@ -145,6 +163,7 @@ class ProductController extends Controller
     }
     public function update($id, Request $request){
         $product            =   Product::find($id);
+        $validationData = $this->validateRules($request);
         $rules= [
             'title'=>'required',
             'slug'=>'required|unique:products,slug,'.$product->id.',id',
@@ -153,11 +172,12 @@ class ProductController extends Controller
             'track_qty'=>'required|in:Yes, NO',
             'category'=>'required|numeric',
             'is_featured'=>'required|in:Yes, NO',
-        ];
+        ];        
+        $messages = $validationData['messages'];
         if(!empty( $request->track_qty ) && $request->track_qty == 'Yes'){
             $rules['qty'] = 'required|numeric';
         };
-        $validator = Validator::make($request->all(),$rules);
+        $validator = Validator::make($request->all(),$rules,$messages);
         if($validator->passes()){
             $product->title         =   $request->title;
             $product->slug          =   $request->slug;
@@ -174,9 +194,7 @@ class ProductController extends Controller
             $product->brand_id      =   $request->brand_id;
             $product->is_featured   =   $request->is_featured;
             $product->save();
-
             //Save Gallery Pics
-            
             $request->session()->flash('success','Product Update  Successfully');
             return response()->json([
                 'status'=> true,
@@ -188,5 +206,30 @@ class ProductController extends Controller
                 'errors'=>$validator->errors()
             ]);
         }
+    }
+    public function delete($id, Request $request){
+        $product            =   Product::find($id);
+        if(empty($product)){
+            $request->session()->flash('error','Product Not Found');
+            return response()->json([
+                'status'=> false,
+                'notFound'=>ture,
+            ]);
+        }
+        $productImages     =    Product_Image::where('product_id',$id)->get();
+         //Image Delete Form Folder
+         if(!empty($productImages)){
+            foreach($productImages as $productImage){
+                File::delete(public_path('uploads/product/large/'.$productImage->image));
+                File::delete(public_path('uploads/product/small/'.$productImage->image));
+            }
+             Product_Image::where('product_id',$id)->delete();
+        }
+        $product->delete();
+        $request->session()->flash('success','Product Delete  Successfully');
+        return response()->json([
+            'status'=> true,
+            'success'=>"Product Delete  Successfully"
+         ]);
     }
 }

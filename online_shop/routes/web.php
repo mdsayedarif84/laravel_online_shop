@@ -10,23 +10,18 @@ use App\Http\Controllers\Admin\Brand\BrandController;
 use App\Http\Controllers\Admin\Product\ProductController;
 use App\Http\Controllers\Admin\Product\ProductSubCategoryController;
 use App\Http\Controllers\Admin\Product\ProductImageController;
+//FrontController
+use App\Http\Controllers\Front\Home\FrontController;
+
 use Illuminate\Http\Request;
 
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/', [FrontController::class,'index'])->name('front.home');
+
 Route::group(['prefix'=>'admin'],function(){
     Route::group(['middleware' => 'admin.guest'],function(){
         Route::get('/login', [AdminLoginController::class, 'index'])->name('admin.login');
@@ -67,6 +62,7 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/products/list', [ProductController::class, 'list'])->name('products.list');
         Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
         Route::put('/product/{id}/update', [ProductController::class, 'update'])->name('product.update');
+        Route::delete('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
 
         Route::get('/product-subCategories', [ProductSubCategoryController::class, 'index'])->name('product-subCategories.index');
         Route::post('/product-image/update', [ProductImageController::class, 'update'])->name('product-image.update');
