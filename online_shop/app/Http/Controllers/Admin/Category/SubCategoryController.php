@@ -34,6 +34,7 @@ class SubCategoryController extends Controller
             'slug'=>'required|unique:sub_categories',
             'category'=>'required',
             'status'=>'required',
+            'showHome'=>'required',
         ],
         [
             'name.required' => 'Enter Your Name!',
@@ -46,6 +47,7 @@ class SubCategoryController extends Controller
             $subCategory->name =    $request->name;
             $subCategory->slug =    $request->slug;
             $subCategory->status =    $request->status;
+            $subCategory->showHome =    $request->showHome;
             $subCategory->category_id =    $request->category;
             $subCategory->save();
 
@@ -88,6 +90,7 @@ class SubCategoryController extends Controller
             'slug'=>'required|unique:sub_categories,slug,'.$subCategory->id.',id',
             'category'=>'required',
             'status'=>'required',
+            'showHome'=>'required',
         ],
         [
             'name.required' => 'Enter Your Name!',
@@ -99,6 +102,7 @@ class SubCategoryController extends Controller
             $subCategory->name =    $request->name;
             $subCategory->slug =    $request->slug;
             $subCategory->status =    $request->status;
+            $subCategory->showHome =    $request->showHome;
             $subCategory->category_id =    $request->category;
             $subCategory->save();
 

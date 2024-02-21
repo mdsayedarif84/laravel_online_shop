@@ -56,8 +56,8 @@ Create Category
                      </div>
                   </div>
                   <div class="row">
-                     <div class="col-md-3"></div>
-                     <div class="col-md-6">
+                     <div class="col-md-1"></div>
+                     <div class="col-md-5">
                         <div class="mb-3">
                            <label for="status">Status</label>
                            <select name="status" id="status" class="form-control">
@@ -67,7 +67,16 @@ Create Category
                            <p></p>
                         </div>
                      </div>
-                     <div class="col-md-3"></div>
+                     <div class="col-md-5">
+                        <div class="mb-3">
+                           <label for="status">Show On Home</label>
+                           <select name="showHome" id="showHome" class="form-control">
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="col-md-1"></div>
                   </div>
                </div>
             </div>
