@@ -1,6 +1,6 @@
 @extends('admin.dashboard.dashboard')
 @section('title')
-Create Category
+Edit Sub Category
 @endsection
 @section('body')
 <div class="content-wrapper">
@@ -69,10 +69,10 @@ Create Category
                      </div>
                      <div class="col-md-5">
                         <div class="mb-3">
-                           <label for="status">Show On Home</label>
+                           <label for="showHome">Show On Home</label>
                            <select name="showHome" id="showHome" class="form-control">
-                              <option value="Yes">Yes</option>
-                              <option value="No">No</option>
+                              <option {{ ($subCategory->showHome == 'Yes') ?'selected' : '' }} value="Yes">Yes</option>
+                              <option {{ ($subCategory->showHome == 'No') ?'selected' : '' }} value="No">No</option>
                            </select>
                         </div>
                      </div>
@@ -95,10 +95,10 @@ Create Category
 <script>
 $("#subCategoryForm").submit(function(event) {
    event.preventDefault();
-   var element = $("#subCategoryForm");
+   var element = $(this);
    // $("button[type=submit)]").prop('disabled',true);
    $.ajax({
-      url: '{{route("sub-categories.update",$subCategory->id)}}',
+      url: '{{route("sub-category.update",$subCategory->id)}}',
       type: 'put',
       data: element.serializeArray(),
       dataType: 'json',
@@ -118,10 +118,10 @@ $("#subCategoryForm").submit(function(event) {
                .removeClass('invalid-feedback').html("");
             
          } else {
-            if(response['notFound']== true{
+            if(response['notFound']== true){
                window.location.href = '{{ route("sub-categories.list") }}';
                return false;
-            })
+            }
             var errors = response['errors'];
             if (errors['category']) {
                $("#category").addClass('is-invalid')

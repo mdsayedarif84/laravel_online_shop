@@ -35,12 +35,6 @@ class SubCategoryController extends Controller
             'category'=>'required',
             'status'=>'required',
             'showHome'=>'required',
-        ],
-        [
-            'name.required' => 'Enter Your Name!',
-            'slug.required' => 'Input Correct slug & unique!',
-            'category.required' => 'Select Category!',
-            'status.required' => 'Select Status !',
         ]);
         if($validator->passes()){
             $subCategory    =   new SubCategory();
@@ -91,12 +85,6 @@ class SubCategoryController extends Controller
             'category'=>'required',
             'status'=>'required',
             'showHome'=>'required',
-        ],
-        [
-            'name.required' => 'Enter Your Name!',
-            'slug.required' => 'Input Correct slug & unique!',
-            'category.required' => 'Select Category!',
-            'status.required' => 'Select Status !',
         ]);
         if($validator->passes()){
             $subCategory->name =    $request->name;

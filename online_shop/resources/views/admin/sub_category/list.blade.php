@@ -51,6 +51,7 @@ Create Category
                         <th>Name</th>
                         <th>Slug</th>
                         <th>Category</th>
+                        <th>Show Home</th>
                         <th width="100">Status</th>
                         <th width="100">Action</th>
                      </tr>
@@ -63,6 +64,7 @@ Create Category
                         <td>{{ $subCategory->name}}</td>
                         <td>{{ $subCategory->slug}}</td>
                         <td>{{ $subCategory->categoryName}}</td>
+                        <td>{{ $subCategory->showHome}}</td>
                         <td>
                            @if( $subCategory->status==1)
                            <svg class="text-success-500 h-6 w-6 text-success" xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +81,7 @@ Create Category
                            @endif
                         </td>
                         <td>
-                           <a href="{{route('sub-categories.edit',$subCategory->id)}}">
+                           <a href="{{route('sub-category.edit',$subCategory->id)}}">
                               <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
                                  viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                  <path
