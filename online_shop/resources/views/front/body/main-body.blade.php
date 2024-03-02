@@ -131,7 +131,6 @@ home
          </div>
       </div>
    </section>
-
    <section class="section-4 pt-5">
       <div class="container">
          <div class="section-title">
@@ -146,11 +145,11 @@ home
                @endphp
                <div class="card product-card">
                   <div class="product-image position-relative">
-                     <a href="" class="product-img">
+                     <a href="{{ route('front.product',$product->slug) }}" class="product-img">
                            @if(!empty($productImage->image))
-                           <img class="card-img-top" src="{{asset('/uploads/product/small/'.$productImage->image)}}">
+                              <img class="card-img-top" src="{{asset('/uploads/product/small/'.$productImage->image)}}">
                            @else
-                           <img class="card-img-top" src="{{asset('/uploads/img/default150x150.png')}}" >
+                              <img class="card-img-top" src="{{asset('/uploads/img/default150x150.png')}}" >
                            @endif
                      </a>
                      <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
@@ -166,7 +165,7 @@ home
                      <div class="price mt-2">
                         <span class="h5"><strong>{{$product->price}}</strong></span>
                         @if($product->compare_price > 0)
-                        <span class="h6 text-underline"><del>{{$product->compare_price}}</del></span>
+                           <span class="h6 text-underline"><del>{{$product->compare_price}}</del></span>
                         @endif
                      </div>
                   </div>
@@ -177,7 +176,6 @@ home
          </div>
       </div>
    </section>
-
    <section class="section-4 pt-5">
       <div class="container">
          <div class="section-title">
@@ -192,15 +190,14 @@ home
                   @endphp
                   <div class="card product-card">
                      <div class="product-image position-relative">
-                        <a href="" class="product-img">
+                        <a href="{{ route('front.product',$product->slug) }}" class="product-img">
                            @if(!empty($productImage->image))
-                           <img class="card-img-top" src="{{asset('/uploads/product/small/'.$productImage->image)}}">
+                              <img class="card-img-top" src="{{asset('/uploads/product/small/'.$productImage->image)}}">
                            @else
-                           <img class="card-img-top" src="{{asset('/uploads/img/default150x150.png')}}" >
+                              <img class="card-img-top" src="{{asset('/uploads/img/default150x150.png')}}" >
                            @endif
                         </a>
                         <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
-
                         <div class="product-action">
                            <a class="btn btn-dark" href="#">
                               <i class="fa fa-shopping-cart"></i> Add To Cart

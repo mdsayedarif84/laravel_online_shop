@@ -36,6 +36,7 @@
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/slick.css')}}" />
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/slick-theme.css')}}" />
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/video-js.css')}}" />
+   <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/ion.rangeSlider.min.css')}}" />
    <link rel="stylesheet" type="text/css"
       href="{{asset('front-assets/css/style.css')}}" />
 
@@ -52,9 +53,15 @@
 
 <body data-instant-intensity="mousedown">
 
+   <!-- header start -->
    @include('front.includes.header')
+   <!-- header end -->
+   <!-- main start  -->
    @yield('body')
+   <!-- end main  -->
+   <!-- start footer -->
    @include('front.includes.footer')
+   <!-- end footer -->
 
    <script src="{{ asset('front-assets/js/jquery-3.6.0.min.js')}}"></script>
    <script src="{{ asset('front-assets/js/bootstrap.bundle.5.1.3.min.js')}}"></script>
@@ -62,6 +69,7 @@
    <script src="{{ asset('front-assets/js/lazyload.17.6.0.min.js')}}"></script>
    <script src="{{ asset('front-assets/js/slick.min.js')}}"></script>
    <script src="{{ asset('front-assets/js/custom.js')}}"></script>
+   <script src="{{ asset('front-assets/js/ion.rangeSlider.min.js')}}"></script>
    <script>
    window.onscroll = function() {
       myFunction()
@@ -78,6 +86,7 @@
       }
    }
    </script>
+   @yield('customJs')
 </body>
 
 </html>
