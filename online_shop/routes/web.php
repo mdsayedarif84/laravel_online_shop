@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\Product\ProductImageController;
 use App\Http\Controllers\Front\Home\FrontController;
 use App\Http\Controllers\Front\Shop\ShopController;
 use App\Http\Controllers\Front\Cart\CartController;
+use App\Http\Controllers\Front\CustomerAuth\AuthController;
 
 use Illuminate\Http\Request;
 
@@ -29,6 +30,11 @@ Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('front.ad
 Route::get('/cart', [CartController::class,'cart'])->name('cart');
 Route::post('/update-cart', [CartController::class,'updateCart'])->name('front.updateCart');
 Route::post('/remove-cart', [CartController::class,'removeItem'])->name('front.removeCart');
+
+Route::get('/customer-login', [AuthController::class,'login'])->name('login');
+Route::get('/register', [AuthController::class,'register'])->name('register');
+Route::post('/process-register', [AuthController::class,'processRegister'])->name('process-register');
+
 
 Route::group(['prefix'=>'admin'],function(){
     Route::group(['middleware' => 'admin.guest'],function(){
