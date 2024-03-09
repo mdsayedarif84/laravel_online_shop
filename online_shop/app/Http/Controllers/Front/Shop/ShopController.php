@@ -77,7 +77,16 @@ class ShopController extends Controller
         }
         // return $product;
         // dd($product);
+
+        $relatedProducts=[];
+        //fetch related Products
+        if($product->related_products != ''){
+            $relatedProductArray    =   explode(',',$product->related_products);
+            $relatedProducts= Product::whereIn('id',$relatedProductArray)->with('productImage')->get();
+        }
+        // return $relatedProducts;
         $data['product']= $product;
+        $data['relatedProducts']  =   $relatedProducts;
         return view('front.product.product',$data);
     }
 }

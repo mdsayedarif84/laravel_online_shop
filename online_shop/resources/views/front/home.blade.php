@@ -3,7 +3,7 @@
 
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-   <title>Home</title>
+   <title>@yield('title')</title>
    <meta name="description" content="" />
    <meta name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no" />
@@ -31,7 +31,7 @@
    <meta name="twitter:image" content="" />
    <meta name="twitter:image:alt" content="" />
    <meta name="twitter:card" content="summary_large_image" />
-
+	<meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
 
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/slick.css')}}" />
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/slick-theme.css')}}" />
@@ -70,6 +70,13 @@
    <script src="{{ asset('front-assets/js/slick.min.js')}}"></script>
    <script src="{{ asset('front-assets/js/custom.js')}}"></script>
    <script src="{{ asset('front-assets/js/ion.rangeSlider.min.js')}}"></script>
+   <script type="text/javascript">
+			$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+			});
+		</script>
    <script>
    window.onscroll = function() {
       myFunction()
@@ -85,6 +92,26 @@
          navbar.classList.remove("sticky");
       }
    }
+//This cdoe addToCart
+   function addToCart(id){
+        // alert(id);
+        $.ajax({
+            url:'{{ route("front.addToCart") }}',
+            type:'post',
+            data:{id:id},
+            dataType:'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success:function(response){
+                if(response.status == true){
+                    window.location.href= " {{ route('cart') }} "
+                }else{
+                    alert(response.message);
+                }
+            },
+        });
+    }
    </script>
    @yield('customJs')
 </body>

@@ -155,7 +155,7 @@ home
                      <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
 
                      <div class="product-action">
-                        <a class="btn btn-dark" href="#">
+                        <a href="javascript:void(0);" onclick="addToCart({{ $product->id }})" class="btn btn-dark">
                            <i class="fa fa-shopping-cart"></i> Add To Cart
                         </a>
                      </div>
@@ -199,7 +199,7 @@ home
                         </a>
                         <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
                         <div class="product-action">
-                           <a class="btn btn-dark" href="#">
+                           <a href="javascript:void(0);" onclick="addToCart({{ $product->id }})" class="btn btn-dark" >
                               <i class="fa fa-shopping-cart"></i> Add To Cart
                            </a>
                         </div>

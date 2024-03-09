@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="{{asset('adminAsset/css/adminlte.min.css')}}">
 	<link rel="stylesheet" href="{{asset('adminAsset/plugins/summernote/summernote-bs4.min.css')}}">
 	<link rel="stylesheet" href="{{asset('adminAsset/plugins/dropzone/min/dropzone.min.css')}}">
+	<link rel="stylesheet" href="{{asset('adminAsset/plugins/select2/css/select2.min.css')}}">
 
 	<link rel="stylesheet" href="{{asset('adminAsset/css/custom.css')}}">
 	<meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
@@ -52,6 +53,7 @@
 		<!-- Summernote -->
 		<script src="{{asset('adminAsset/plugins/summernote/summernote-bs4.min.js')}}"></script>
 		<script src="{{asset('adminAsset/plugins/dropzone/min/dropzone.min.js')}}"></script>
+		<script src="{{asset('adminAsset/plugins/select2/js/select2.min.js')}}"></script>
 		<!-- AdminLTE for demo purposes -->
 		<script src="{{asset('adminAsset/js/demo.js')}}"></script>
 		<script type="text/javascript">

@@ -46,8 +46,15 @@ Edit Product
                            </div>
                            <div class="col-md-12">
                               <div class="mb-3">
+                                 <label for="short_description">Short Description</label>
+                                 <textarea name="short_description" id="short_description" cols="30" rows="5" class="summernote"
+                                    >{{ $product->short_description }}</textarea>
+                              </div>
+                           </div>
+                           <div class="col-md-12">
+                              <div class="mb-3">
                                  <label for="description">Description</label>
-                                 <textarea name="description" id="description" cols="30" rows="10" class="summernote"
+                                 <textarea name="description" id="description" cols="30" rows="8" class="summernote"
                                     placeholder="Description">{{ $product->description }}</textarea>
                               </div>
                            </div>
@@ -192,6 +199,21 @@ Edit Product
                   </div>
                   <div class="card mb-3">
                      <div class="card-body">
+                        <h2 class="h4 mb-3">Related product</h2>
+                        <div class="mb-3">
+                           <select multiple name="related_products[]" id="related_products" class="form-control related-product w-100" >
+                              @if(!empty($relatedProducts))
+                                 @foreach($relatedProducts as $relProduct)
+                                 <option selected value="{{ $relProduct->id }}">{{$relProduct->title}}</option>
+                                 @endforeach
+                              @endif
+                           </select>
+                           <p class="error"></P>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="card mb-3">
+                     <div class="card-body">
                         <h2 class="h4 mb-3">Pricing</h2>
                         <div class="row">
                            <div class="col-md-12">
@@ -217,6 +239,20 @@ Edit Product
                         </div>
                      </div>
                   </div>
+                  <div class="card mb-3">
+                     <div class="card-body">
+                        <div class="row">
+                           <div class="col-md-12">
+                              <div class="mb-3">
+                                 <label for="shipping_returns">Shipping & Returns</label>
+                                 <input type="text" value="{{ $product->shipping_returns }}" name="shipping_returns" id="shipping_returns"
+                                    class="form-control">
+                                 <p class="error"></P>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
                </div>
             </div>
             <div class="pb-5 pt-3">
@@ -232,6 +268,22 @@ Edit Product
 @endsection
 @section('customJs')
 <script>
+//Product Related Select2 option code 
+$('.related-product').select2({
+    ajax: {
+        url: '{{ route("get.products") }}',
+        dataType: 'json',
+        tags: true,
+        multiple: true,
+        minimumInputLength: 3,
+        processResults: function (data) {
+            return {
+                results: data.tags
+            };
+        }
+    }
+}); 
+
 $("#productForm").submit(function(event) {
    event.preventDefault();
    var formArray = $(this).serializeArray();

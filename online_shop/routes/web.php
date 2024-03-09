@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\Product\ProductImageController;
 //FrontController
 use App\Http\Controllers\Front\Home\FrontController;
 use App\Http\Controllers\Front\Shop\ShopController;
+use App\Http\Controllers\Front\Cart\CartController;
 
 use Illuminate\Http\Request;
 
@@ -24,6 +25,10 @@ use Illuminate\Http\Request;
 Route::get('/', [FrontController::class,'index'])->name('front.home');
 Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class,'index'])->name('front.shop');
 Route::get('/product/{slug}', [ShopController::class,'product'])->name('front.product');
+Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('front.addToCart');
+Route::get('/cart', [CartController::class,'cart'])->name('cart');
+Route::post('/update-cart', [CartController::class,'updateCart'])->name('front.updateCart');
+Route::post('/remove-cart', [CartController::class,'removeItem'])->name('front.removeCart');
 
 Route::group(['prefix'=>'admin'],function(){
     Route::group(['middleware' => 'admin.guest'],function(){
@@ -66,14 +71,11 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
         Route::put('/product/{id}/update', [ProductController::class, 'update'])->name('product.update');
         Route::delete('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
+        Route::get('/get-products', [ProductController::class, 'getProducts'])->name('get.products');
 
         Route::get('/product-subCategories', [ProductSubCategoryController::class, 'index'])->name('product-subCategories.index');
         Route::post('/product-image/update', [ProductImageController::class, 'update'])->name('product-image.update');
         Route::delete('/product-image/delete', [ProductImageController::class, 'destory'])->name('product-image.destory');
-
-
-
-
 
                 //temp-images.create
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
