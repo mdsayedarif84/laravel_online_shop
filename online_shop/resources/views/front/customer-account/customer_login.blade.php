@@ -17,6 +17,7 @@ Login
 
     <section class=" section-10">
         <div class="container">
+        @include('front.message.message')
             <div class="login-form">    
                 <form action="/examples/actions/confirmation.php" method="post">
                     <h4 class="modal-title">Login to Your Account</h4>
@@ -31,7 +32,7 @@ Login
                     </div> 
                     <input type="submit" class="btn btn-dark btn-block btn-lg" value="Login">              
                 </form>			
-                <div class="text-center small">Don't have an account? <a href="register.php">Sign up</a></div>
+                <div class="text-center small">Don't have an account? <a href="{{ route('register')}}">Sign up</a></div>
             </div>
         </div>
     </section>
