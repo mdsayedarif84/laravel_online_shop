@@ -31,9 +31,19 @@ Route::get('/cart', [CartController::class,'cart'])->name('cart');
 Route::post('/update-cart', [CartController::class,'updateCart'])->name('front.updateCart');
 Route::post('/remove-cart', [CartController::class,'removeItem'])->name('front.removeCart');
 
-Route::get('/customer-login', [AuthController::class,'login'])->name('login');
-Route::get('/register', [AuthController::class,'register'])->name('register');
-Route::post('/process-register', [AuthController::class,'processRegister'])->name('process-register');
+Route::group(['prefix'=>'account'],function(){
+    Route::group(['middleware' => 'guest'],function(){
+        Route::get('/login', [AuthController::class,'login'])->name('login');
+        Route::post('/authenticate-login', [AuthController::class,'authenticate'])->name('authenticate');
+        Route::get('/register', [AuthController::class,'register'])->name('register');
+        Route::post('/process-register', [AuthController::class,'processRegister'])->name('process-register');
+    });
+    Route::group(['middleware' => 'auth'],function(){
+
+    });
+});
+
+
 
 
 Route::group(['prefix'=>'admin'],function(){

@@ -37,8 +37,7 @@
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/slick-theme.css')}}" />
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/video-js.css')}}" />
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/ion.rangeSlider.min.css')}}" />
-   <link rel="stylesheet" type="text/css"
-      href="{{asset('front-assets/css/style.css')}}" />
+   <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/style.css')}}" />
 
    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
    <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,9 +71,9 @@
    <script src="{{ asset('front-assets/js/ion.rangeSlider.min.js')}}"></script>
    <script type="text/javascript">
 			$.ajaxSetup({
-			headers: {
-				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			}
+            headers: {
+               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
 			});
 		</script>
    <script>

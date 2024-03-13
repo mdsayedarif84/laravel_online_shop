@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Models\User;
 use Hash;
+use Auth;
 
 
 class AuthController extends Controller
@@ -38,7 +39,7 @@ class AuthController extends Controller
             $user->phone    =   $request->phone;
             $user->save();
             $message=  'You have Registerd Successfully';
-            session()->flash('success',$msg);
+            session()->flash('success',$message);
             return response()->json([
                 'status'=> true,
                 'success'=>$message
@@ -48,6 +49,29 @@ class AuthController extends Controller
                 'status'=> false,
                 'errors'=>$validator->errors()
             ]);
+        }
+    }
+    public function authenticate(Request $request){
+        $validator = Validator::make($request->all(),[
+            'email'=>'required|email',
+            'password'=>'required',
+        ],
+        [
+            'email.required' => 'Input Valid Email!',
+            'password.required' => 'At least use 5 digit !',
+        ]);
+        if($validator->passes()){
+            if(Auth::attempt(['email'=>$request->email, 'password'=>$request->password],$request->get('remember'))){
+                
+            }else{
+                $message=  'Either Email/Password is invalid';
+                session()->flash('error',$message);
+                return redirect()->route('login');
+            }            
+        }else{
+            return redirect()->route('login')
+                ->withErrors($validator)
+                ->withInput($request->only('email'));
         }
     }
 }

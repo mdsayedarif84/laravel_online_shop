@@ -19,13 +19,20 @@ Login
         <div class="container">
         @include('front.message.message')
             <div class="login-form">    
-                <form action="/examples/actions/confirmation.php" method="post">
+                <form action="{{route('authenticate')}}" method="post">
+                    @csrf
                     <h4 class="modal-title">Login to Your Account</h4>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Email" required="required">
+                        <input type="text" name="email" value="{{old('email')}}" class="form-control @error('email') is-invalid @enderror" placeholder="Email">
+                        @error('email')
+                            <p class="invalid-feedback">{{ $message}}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Password" required="required">
+                        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password">
+                        @error('password')
+                            <p class="invalid-feedback">{{ $message}}</p>
+                        @enderror
                     </div>
                     <div class="form-group small">
                         <a href="#" class="forgot-link">Forgot Password?</a>
