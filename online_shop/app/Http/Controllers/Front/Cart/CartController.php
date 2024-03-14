@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use App\Models\Product;
+// use Auth;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Country;
+
+ 
 
 
 class CartController extends Controller
@@ -31,7 +36,7 @@ class CartController extends Controller
                 Cart::add($product->id, $product->title, 1, $product->price,
                     ['productImage'=>(!empty($product->productImage)) ? $product->productImage->first() : '']);
                 $status = true;
-                $message= '<h1>'.$product->title."</h1> Added in cart ";
+                $message= '<strong>'.$product->title."</strong> Added in cart ";
                 session()->flash('success',$message);
             }else{
                 $status = false;
@@ -44,7 +49,7 @@ class CartController extends Controller
             Cart::add($product->id, $product->title, 1, $product->price,
                     ['productImage'=>(!empty($product->productImage)) ? $product->productImage->first() : '']);
             $status = true;
-            $message= "<h1>".$product->title."</h1> product added in cart ";
+            $message= "<strong>".$product->title."</strong> product added in cart ";
             session()->flash('success',$message);
         }
         return response()->json([
@@ -104,5 +109,23 @@ class CartController extends Controller
                 "status" => true,
                 "message" => $message,
             ]);
+    }
+    public function checkout(){
+        // -- ifcart is empty redirect in cart page
+        if(Cart::count() == 0 ){
+            return redirect()->route('cart');
+        }
+        // if user is not login then redirect to login page
+        if(Auth::check() == false ){
+            if(!session()->has('url.intended ')){
+                session(['url.intended'=>url()->current()]);
+            }
+            return redirect()->route('login');  
+        }
+        session()->forget('url.intended ');
+
+        $countries  =   Country::orderBy('name','ASC')->get();
+        return view('front.cart.checkout',['countries' => $countries]);
+
     }
 }

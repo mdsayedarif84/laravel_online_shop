@@ -91,7 +91,7 @@ Cart
                                 <div>${{ Cart::subtotal() }}</div>
                             </div>
                             <div class="pt-5">
-                                <a href="login.php" class="btn-dark btn btn-block w-100">Proceed to Checkout</a>
+                                <a href="{{ route('checkout') }}" class="btn-dark btn btn-block w-100">Proceed to Checkout</a>
                             </div>
                         </div>
                     </div>     
@@ -104,7 +104,7 @@ Cart
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <h1 class="text-danger text-center">Cart Is Empty!!</h1>
+                                <h1 class="text-danger text-center">Your Cart Is Empty!!</h1>
                             </div>
                         </div>
                     </div>

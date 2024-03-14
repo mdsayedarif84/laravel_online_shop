@@ -18,8 +18,6 @@ use App\Http\Controllers\Front\CustomerAuth\AuthController;
 
 use Illuminate\Http\Request;
 
-
-
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -30,6 +28,8 @@ Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('front.ad
 Route::get('/cart', [CartController::class,'cart'])->name('cart');
 Route::post('/update-cart', [CartController::class,'updateCart'])->name('front.updateCart');
 Route::post('/remove-cart', [CartController::class,'removeItem'])->name('front.removeCart');
+Route::get('/checkout', [CartController::class,'checkout'])->name('checkout');
+
 
 Route::group(['prefix'=>'account'],function(){
     Route::group(['middleware' => 'guest'],function(){
@@ -39,12 +39,11 @@ Route::group(['prefix'=>'account'],function(){
         Route::post('/process-register', [AuthController::class,'processRegister'])->name('process-register');
     });
     Route::group(['middleware' => 'auth'],function(){
+        Route::get('/profile', [AuthController::class,'profile'])->name('profile');
+        Route::get('/logout', [AuthController::class,'logout'])->name('logout');
 
     });
 });
-
-
-
 
 Route::group(['prefix'=>'admin'],function(){
     Route::group(['middleware' => 'admin.guest'],function(){
