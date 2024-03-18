@@ -29,6 +29,9 @@ Route::get('/cart', [CartController::class,'cart'])->name('cart');
 Route::post('/update-cart', [CartController::class,'updateCart'])->name('front.updateCart');
 Route::post('/remove-cart', [CartController::class,'removeItem'])->name('front.removeCart');
 Route::get('/checkout', [CartController::class,'checkout'])->name('checkout');
+Route::post('/process-checkout', [CartController::class,'processCheckout'])->name('front.processCheckout');
+Route::get('/thanks/{orderId}', [CartController::class,'thankYou'])->name('thankYou');
+Route::get('/get-country', [CartController::class, 'getCountries'])->name('get.countries');
 
 
 Route::group(['prefix'=>'account'],function(){

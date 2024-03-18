@@ -38,6 +38,7 @@
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/video-js.css')}}" />
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/ion.rangeSlider.min.css')}}" />
    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/style.css')}}" />
+   <!-- <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/font.awesome.css')}}" /> -->
 
    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
    <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,6 +49,8 @@
 
    <!-- Fav Icon -->
    <link rel="shortcut icon" type="image/x-icon" href="#" />
+   <link rel="stylesheet" href="{{asset('../adminAsset/plugins/select2/css/select2.min.css')}}">
+
 </head>
 
 <body data-instant-intensity="mousedown">
@@ -69,6 +72,7 @@
    <script src="{{ asset('front-assets/js/slick.min.js')}}"></script>
    <script src="{{ asset('front-assets/js/custom.js')}}"></script>
    <script src="{{ asset('front-assets/js/ion.rangeSlider.min.js')}}"></script>
+   <script src="{{asset('../adminAsset/plugins/select2/js/select2.min.js')}}"></script>
    <script type="text/javascript">
 			$.ajaxSetup({
             headers: {

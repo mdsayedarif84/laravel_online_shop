@@ -38,7 +38,7 @@ class AuthController extends Controller
             $user->password =   Hash::make($request->password);
             $user->phone    =   $request->phone;
             $user->save();
-            $message=  'You have Registerd Successfully';
+            $message=  'You have Registerd Successfully & login with Your instant email';
             session()->flash('success',$message);
             return response()->json([
                 'status'=> true,

@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use App\Models\Product;
-// use Auth;
+use App\Models\CustomerAddress;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Country;
-
- 
-
+use Validator;
 
 class CartController extends Controller
 {
@@ -121,11 +122,137 @@ class CartController extends Controller
                 session(['url.intended'=>url()->current()]);
             }
             return redirect()->route('login');  
-        }
+        }       
+            $user   =   Auth::user()->id;
+            $customerAddress    =   CustomerAddress::where('user_id',$user)->first();
         session()->forget('url.intended ');
-
         $countries  =   Country::orderBy('name','ASC')->get();
-        return view('front.cart.checkout',['countries' => $countries]);
+        return view('front.cart.checkout',[
+            'countries' => $countries,
+            'customerAddress' => $customerAddress,
+            ]);
+    }
+    public function validateRules($request){
+        $rules= [
+            'first_name'=>'required|min:3',
+            'last_name'=>'required',
+            'email'=>'required|email',
+            'country'=>'required',
+            'address'=>'required|min:10',
+            'city'=>'required',
+            'state'=>'required',
+            'zip'=>'required',
+            'mobile'=>'required',
+        ];
+        $messages = [
+            'first_name.required' => 'The first name is Needable.',
+            'last_name.required' => 'The last name is required.',
+            'email.required' => 'Take a Valid Email',
+            'country.required' => 'Please Select The Country Name',
+            'address.required' => 'The Addres Must Mandatory',
+            'city.required' => 'Please Input the city Name',
+            'state.required' => 'Please Input the state Name',
+            'zip.required' => 'Please Input the zip code',
+            'mobile.required' => 'Your Mobile is Very Neeedable',
+        ];
+        return ['rules' => $rules, 'messages' => $messages];
+    }
+    public function processCheckout(Request $request){
+        $validationData = $this->validateRules($request);
+        $rules = $validationData['rules'];
+        $messages = $validationData['messages'];
+        $validator = Validator::make($request->all(),$rules,$messages);
+        if($validator->fails()){
+            return response()->json([
+                'message'=> 'Please fix The Error!',
+                'status'=>false,
+                'errors'=>$validator->errors()
+            ]);
+        }
+        // step-2 save user address
+        $user       = Auth::user();
+        CustomerAddress::updateOrCreate(
+            ['user_id'=>$user->id],
+            [
+                'user_id'=>$user->id,
+                'first_name'=>$request->first_name,
+                'last_name'=>$request->last_name,
+                'email'=>$request->email,
+                'mobile'=>$request->mobile,
+                'country_id'=>$request->country,
+                'address'=>$request->address,
+                'apartment'=>$request->apartment,
+                'city'=>$request->city,
+                'state'=>$request->state,
+                'zip'=>$request->zip,
+            ]
+        );
+        //setep -3 store data in order table
+        if($request->payment_method == 'cod'){
+            $shipping           =   0;
+            $discount           =   0;
+            $subtoltal          =   Cart::subtotal(2,'.','');
+            $grandtotal         =   $subtoltal+$shipping;
 
+            $order              =   new Order();
+            $order->user_id     =   $user->id;
+            $order->subtotal    =  $subtoltal; 
+            $order->shipping    =  $shipping; 
+            $order->grand_total =  $grandtotal;
+            $order->first_name  =   $request->first_name;
+            $order->last_name   =   $request->last_name;
+            $order->email       =   $request->email;
+            $order->mobile      =   $request->mobile;
+            $order->country_id  =   $request->country;
+            $order->address     =   $request->address;
+            $order->apartment   =   $request->apartment;
+            $order->city        =   $request->city;
+            $order->state       =   $request->state;
+            $order->zip         =   $request->zip;
+            $order->notes       =   $request->notes;
+            $order->save();
+
+            //step-4 data store in order item
+            foreach( Cart::content() as $item){
+                $orderItem  =   new OrderItem();
+                $orderItem->product_id  =   $item->id;
+                $orderItem->order_id  =   $order->id;
+                $orderItem->name  =   $item->name;
+                $orderItem->qty  =   $item->qty;
+                $orderItem->price  =   $item->price;
+                $orderItem->total  =   $item->price*$item->qty;
+                $orderItem->save();
+            }
+            $message=  'Order Save Successfully';
+            session()->flash('success',$message);
+            Cart::destroy();
+            return response()->json([
+                'success'=>$message,
+                'orderId'=> $order->id,
+                'status'=> true,
+            ]);
+        }else{
+            //
+        }
+    }
+    public function thankYou($id){
+        return view('front.cart.thank_you',['id'=>$id]);
+
+    }
+    public function getCountries(Request $request){
+        $temCountry=[];
+        if($request->term !=""){
+            $countries = Country::where('name','like','%'.$request->term.'%')->get();
+            if($countries !=null){
+                foreach($countries as $key){
+                    $temCountry[]=array('id'=>$key->id, 'text'=>$key->name);
+
+                }
+            }
+        }
+        return response()->json([
+            'tags'=>    $temCountry,
+            'status'=>  true
+        ]);
     }
 }
