@@ -48,7 +48,7 @@
                                        <h2 class="h5 mb-3">Search a Country</h2>
                                        <div class="mb-3">
                                           <select multiple name="country[]" id="country" class="form-control searchCountry">
-                                             <option value="">Select a Country</option>
+                                             <!-- <option value="">Select a Country</option> -->
                                              @if($countries->isNotEmpty())
                                                 @foreach($countries as $country)
                                                    <option {{ (!empty($customerAddress) && $customerAddress->country_id == $country->id) ? 'selected' : '' }} value="{{$country->id}}">{{$country->name}}</option>

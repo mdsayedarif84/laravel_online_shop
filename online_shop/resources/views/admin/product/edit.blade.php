@@ -204,7 +204,7 @@ Edit Product
                            <select multiple name="related_products[]" id="related_products" class="form-control related-product w-100" >
                               @if(!empty($relatedProducts))
                                  @foreach($relatedProducts as $relProduct)
-                                 <option selected value="{{ $relProduct->id }}">{{$relProduct->title}}</option>
+                                    <option selected value="{{ $relProduct->id }}">{{$relProduct->title}}</option>
                                  @endforeach
                               @endif
                            </select>

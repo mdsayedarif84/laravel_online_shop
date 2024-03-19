@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Brand\BrandController;
 use App\Http\Controllers\Admin\Product\ProductController;
 use App\Http\Controllers\Admin\Product\ProductSubCategoryController;
 use App\Http\Controllers\Admin\Product\ProductImageController;
+use App\Http\Controllers\Admin\Shipping\ShippingController;
 //FrontController
 use App\Http\Controllers\Front\Home\FrontController;
 use App\Http\Controllers\Front\Shop\ShopController;
@@ -94,6 +95,12 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/product-subCategories', [ProductSubCategoryController::class, 'index'])->name('product-subCategories.index');
         Route::post('/product-image/update', [ProductImageController::class, 'update'])->name('product-image.update');
         Route::delete('/product-image/delete', [ProductImageController::class, 'destory'])->name('product-image.destory');
+
+        // shipping routes 
+        Route::get('/shipping/create', [ShippingController::class, 'create'])->name('shipping.create');
+        Route::post('/shipping/store', [ShippingController::class, 'store'])->name('shipping.store');
+        Route::get('/shipping/edit/{id}', [ShippingController::class, 'edit'])->name('shipping.edit');
+        Route::put('/shipping/update/{id}', [ShippingController::class, 'update'])->name('shipping.update');
 
                 //temp-images.create
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
