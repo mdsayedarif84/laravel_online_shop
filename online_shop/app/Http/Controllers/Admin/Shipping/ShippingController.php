@@ -17,7 +17,10 @@ class ShippingController extends Controller
     public function create(){
         $countries = $this->country();
         $shippingCharges    =   ShippingCharge::select('shipping_charges.*','countries.name')
-                                    ->leftJoin('countries','countries.id','shipping_charges.country_id')->get();
+                                    ->leftJoin('countries','countries.id','shipping_charges.country_id')
+                                    ->orderBy('id','DESC')
+                                    ->take(5)
+                                    ->get();
         $data['countries']= $countries;
         $data['shippingCharges']= $shippingCharges;
         return view('admin.shipping.create',$data);
@@ -94,5 +97,22 @@ class ShippingController extends Controller
                 'message'=> $message
             ]);
         }
+    }
+    public function delete($id,Request $request){
+        $shippingCharge    =   ShippingCharge::find($id);
+        if(empty($shippingCharge)){
+            $request->session()->flash('error','Shipping Not  Found');
+            return response()->json([
+                'status'=> true,
+                'message'=>'Shipping Not Found'
+            ]);
+            // return redirect()->route('categories.index');
+        }        
+         $shippingCharge->delete();
+         $request->session()->flash('success','Shipping Delete  Successfully');
+         return response()->json([
+            'status'=> true,
+            'message'=>'Shipping Delete Successfully'
+        ]);
     }
 }
