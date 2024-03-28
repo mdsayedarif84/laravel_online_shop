@@ -114,7 +114,7 @@ class CartController extends Controller
             ]);
     }
     public function checkout(){
-        // -- ifcart is empty redirect in cart page
+        // -- if cart is empty redirect in cart page
         if(Cart::count() == 0 ){
             return redirect()->route('cart');
         }
@@ -229,13 +229,13 @@ class CartController extends Controller
 
             //step-4 data store in order item
             foreach( Cart::content() as $item){
-                $orderItem  =   new OrderItem();
+                $orderItem              =   new OrderItem();
                 $orderItem->product_id  =   $item->id;
-                $orderItem->order_id  =   $order->id;
-                $orderItem->name  =   $item->name;
-                $orderItem->qty  =   $item->qty;
-                $orderItem->price  =   $item->price;
-                $orderItem->total  =   $item->price*$item->qty;
+                $orderItem->order_id    =   $order->id;
+                $orderItem->name        =   $item->name;
+                $orderItem->qty         =   $item->qty;
+                $orderItem->price       =   $item->price;
+                $orderItem->total       =   $item->price*$item->qty;
                 $orderItem->save();
             }
             $message=  'Order Save Successfully';
@@ -253,6 +253,43 @@ class CartController extends Controller
     public function thankYou($id){
         return view('front.cart.thank_you',['id'=>$id]);
 
+    }
+    public function getOrderSummary(Request $request){
+        if($request->country_id > 0){
+            $subtotal              =   Cart::subtotal(2,'.','');
+            $shippingInfo           =   ShippingCharge::where('country_id', $request->country_id)->first();
+            $totalQty               =   0;
+            $cartContents           =   Cart::content();
+            foreach($cartContents as $item){
+                $totalQty   += $item->qty;
+            }
+            if(!empty($shippingInfo)){
+
+                $ShippingCharge     =   $totalQty*$shippingInfo->amount;
+                $grandtotal         =   $subtotal+$ShippingCharge;
+                return response()->json([
+                    "status"        => true,
+                    "grandTotal"    => number_format($grandtotal,2),
+                    "ShippingCharge"=> number_format($ShippingCharge,2),
+                ]);
+            }else{
+                $shippingInfo           =   ShippingCharge::where('country_id', 'rest_of_world')->first();
+                $ShippingCharge     =   $totalQty*$shippingInfo->amount;
+                $grandtotal         =   $subtotal+$ShippingCharge;
+                return response()->json([
+                    "status"        => true,
+                    "grandTotal"    => number_format($grandtotal,2),
+                    "ShippingCharge"=> number_format($ShippingCharge,2),
+                ]);
+
+            }
+        }else{
+            return response()->json([
+                "status"        => true,
+                "grandTotal"    => number_format($grandtotal,2),
+                "ShippingCharge"=> number_format(0,2),
+            ]);
+        }
     }
     public function getCountries(Request $request){
         $temCountry=[];

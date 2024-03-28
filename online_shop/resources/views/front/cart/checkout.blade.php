@@ -6,13 +6,13 @@
    <main>
       <section class="section-5 pt-3 pb-3 mb-3 bg-white">
          <div class="container">
-               <div class="light-font">
-                  <ol class="breadcrumb primary-color mb-0">
-                     <li class="breadcrumb-item"><a class="white-text" href="{{route('front.home')}}">Home</a></li>
-                     <li class="breadcrumb-item"><a class="white-text" href="route('front.shop')">Shop</a></li>
-                     <li class="breadcrumb-item">Checkout</li>
-                  </ol>
-               </div>
+            <div class="light-font">
+               <ol class="breadcrumb primary-color mb-0">
+                  <li class="breadcrumb-item"><a class="white-text" href="{{route('front.home')}}">Home</a></li>
+                  <li class="breadcrumb-item"><a class="white-text" href="route('front.shop')">Shop</a></li>
+                  <li class="breadcrumb-item">Checkout</li>
+               </ol>
+            </div>
          </div>
       </section>
       <section class="section-9 pt-4">
@@ -47,7 +47,7 @@
                                     <div class="col-md-12">
                                        <h2 class="h5 mb-3">Search a Country</h2>
                                        <div class="mb-3">
-                                          <select multiple name="country[]" id="country" class="form-control searchCountry">
+                                          <select name="country" id="country" class="form-control ">
                                              <!-- <option value="">Select a Country</option> -->
                                              @if($countries->isNotEmpty())
                                                 @foreach($countries as $country)
@@ -123,11 +123,11 @@
                                  </div>
                                  <div class="d-flex justify-content-between mt-2">
                                     <div class="h6"><strong>Shipping</strong></div>
-                                    <div class="h6"><strong>${{(number_format($totalShippingCharge,2))}}</strong></div>
+                                    <div class="h6"><strong id="shippingAmount">${{(number_format($totalShippingCharge,2))}}</strong></div>
                                  </div>
                                  <div class="d-flex justify-content-between mt-2 summery-end">
                                     <div class="h5"><strong>Total</strong></div>
-                                    <div class="h5"><strong>${{(number_format($subtoltal,2))}}</strong></div>
+                                    <div class="h5"><strong id="grandTotal">${{(number_format($subtoltal,2))}}</strong></div>
                                  </div>                            
                               </div>
                         </div>   
@@ -172,6 +172,7 @@
          </div>
       </section>
    </main>
+   <div class=""></div>
 @endsection
 @section('customJs')
    <script>
@@ -294,19 +295,33 @@
             },
          });
       });
-      $('.searchCountry').select2({
-         ajax: {
-            url: '{{ route("get.countries") }}',
-            dataType: 'json',
-            tags: true,
-            multiple: true,
-            minimumInputLength: 1,
-            processResults: function (data) {
-                  return {
-                     results: data.tags
-                  };
+      // $('.searchCountry').select2({
+      //    ajax: {
+      //       url: '{{ route("get.countries") }}',
+      //       dataType: 'json',
+      //       tags: true,
+      //       multiple: true,
+      //       minimumInputLength: 1,
+      //       processResults: function (data) {
+      //             return {
+      //                results: data.tags
+      //             };
+      //       }
+      //    }
+      // });
+      $("#country").change(function(){
+         $.ajax({
+            url      :  '{{ route("get.orderSummary") }}',
+            type     :  'post',
+            data     :  { country_id: $(this).val()},
+            dataType :  'json',
+            success  :  function(response){
+               if(response.status == true){
+                  ("#shippingAmount").htm(response.ShippingCharge);
+                  ("#grandTotal").htm(response.grandTotal);
+               }
             }
-         }
+         });
       });
    </script>
 @endsection

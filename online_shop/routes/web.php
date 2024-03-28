@@ -16,7 +16,6 @@ use App\Http\Controllers\Front\Home\FrontController;
 use App\Http\Controllers\Front\Shop\ShopController;
 use App\Http\Controllers\Front\Cart\CartController;
 use App\Http\Controllers\Front\CustomerAuth\AuthController;
-
 use Illuminate\Http\Request;
 
 // Route::get('/', function () {
@@ -32,6 +31,7 @@ Route::post('/remove-cart', [CartController::class,'removeItem'])->name('front.r
 Route::get('/checkout', [CartController::class,'checkout'])->name('checkout');
 Route::post('/process-checkout', [CartController::class,'processCheckout'])->name('front.processCheckout');
 Route::get('/thanks/{orderId}', [CartController::class,'thankYou'])->name('thankYou');
+Route::post('/get-orderSummary', [CartController::class, 'getOrderSummary'])->name('get.orderSummary');
 Route::get('/get-country', [CartController::class, 'getCountries'])->name('get.countries');
 
 
