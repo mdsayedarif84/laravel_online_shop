@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Shipping;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Country;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use App\Models\ShippingCharge;
 
 class ShippingController extends Controller
@@ -26,30 +26,30 @@ class ShippingController extends Controller
         return view('admin.shipping.create',$data);
     }
     public function validateRules($request){
-        $rules= [
-            'country'=>'required',
-            'amount'=>'required|numeric',
+        $rules = [
+            'country' =>'required',
+            'amount'  =>'required|numeric',
         ];
         $messages = [
             'country.required' => 'Select The Country Name',
-            'amount.required' => 'Enter Your Amount',
+            'amount.required'  => 'Enter Your Amount',
         ];
-        return ['rules' => $rules, 'messages' => $messages];
+        return ['rules'        => $rules, 'messages' => $messages];
     }
     public function store(Request $request){
         $validationData = $this->validateRules($request);
-        $rules = $validationData['rules'];
-        $messages = $validationData['messages'];
-        $validator = Validator::make($request->all(),$rules,$messages);
+        $rules          = $validationData['rules'];
+        $messages       = $validationData['messages'];
+        $validator      = Validator::make($request->all(),$rules,$messages);
         if($validator->fails()){
             return response()->json([
                 'status'=>false,
                 'errors'=>$validator->errors()
             ]);
         }else{
-            $shipping   =   new ShippingCharge();
+            $shipping               =   new ShippingCharge();
             $shipping->country_id   =   $request->country;  
-            $shipping->amount   =   $request->amount;  
+            $shipping->amount       =   $request->amount;  
             $shipping->save();
             $message=  'Shipping Save  Successfully';
             session()->flash('success',$message);
@@ -115,4 +115,20 @@ class ShippingController extends Controller
             'message'=>'Shipping Delete Successfully'
         ]);
     }
+    // public function adminGetCountries(Request $request){
+    //     $temCountry=[];
+    //     if($request->term !=""){
+    //         $countries = Country::where('name','like','%'.$request->term.'%')->get();
+    //         if($countries !=null){
+    //             foreach($countries as $key){
+    //                 $temCountry[]=array('id'=>$key->id, 'text'=>$key->name);
+
+    //             }
+    //         }
+    //     }
+    //     return response()->json([
+    //         'tags'=>    $temCountry,
+    //         'status'=>  true
+    //     ]);
+    // }
 }

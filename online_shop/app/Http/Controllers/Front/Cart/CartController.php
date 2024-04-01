@@ -13,8 +13,7 @@ use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Country;
 use App\Models\ShippingCharge;
-
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
@@ -204,14 +203,28 @@ class CartController extends Controller
         );
         //setep -3 store data in order table
         if($request->payment_method == 'cod'){
-            $shipping           =   0;
-            $discount           =   0;
-            $subtoltal          =   Cart::subtotal(2,'.','');
-            $grandtotal         =   $subtoltal+$shipping;
+            $shipping       =   0;
+            $discount       =   0;
+            $subtotal       =   Cart::subtotal(2,'.','');
+            // Shipping Calculate
+            $shippingInfo   =   ShippingCharge::where('country_id', $request->country)->first();
+            $totalQty       =   0;
+            $cartContents   =   Cart::content();
+            foreach($cartContents as $item){
+                $totalQty   += $item->qty;
+            }
+            if($shippingInfo != null ){
+                $shipping     =   $totalQty*$shippingInfo->amount;
+                $grandtotal   =   $subtotal+$shipping;
+            }else{
+                $shippingInfo =   ShippingCharge::where('country_id', 'rest_of_world')->first();
+                $shipping     =   $totalQty*$shippingInfo->amount;
+                $grandtotal   =   $subtotal+$shipping;
+            }
 
             $order              =   new Order();
             $order->user_id     =   $user->id;
-            $order->subtotal    =  $subtoltal; 
+            $order->subtotal    =  $subtotal; 
             $order->shipping    =  $shipping; 
             $order->grand_total =  $grandtotal;
             $order->first_name  =   $request->first_name;
@@ -255,16 +268,16 @@ class CartController extends Controller
 
     }
     public function getOrderSummary(Request $request){
+        $grandtotal         =   0;
+        $subtotal       =   Cart::subtotal(2,'.','');
         if($request->country_id > 0){
-            $subtotal              =   Cart::subtotal(2,'.','');
-            $shippingInfo           =   ShippingCharge::where('country_id', $request->country_id)->first();
-            $totalQty               =   0;
-            $cartContents           =   Cart::content();
+            $shippingInfo   =   ShippingCharge::where('country_id', $request->country_id)->first();
+            $totalQty       =   0;
+            $cartContents   =   Cart::content();
             foreach($cartContents as $item){
                 $totalQty   += $item->qty;
             }
-            if(!empty($shippingInfo)){
-
+            if($shippingInfo != null ){
                 $ShippingCharge     =   $totalQty*$shippingInfo->amount;
                 $grandtotal         =   $subtotal+$ShippingCharge;
                 return response()->json([
@@ -273,7 +286,7 @@ class CartController extends Controller
                     "ShippingCharge"=> number_format($ShippingCharge,2),
                 ]);
             }else{
-                $shippingInfo           =   ShippingCharge::where('country_id', 'rest_of_world')->first();
+                $shippingInfo       =   ShippingCharge::where('country_id', 'rest_of_world')->first();
                 $ShippingCharge     =   $totalQty*$shippingInfo->amount;
                 $grandtotal         =   $subtotal+$ShippingCharge;
                 return response()->json([
@@ -286,25 +299,25 @@ class CartController extends Controller
         }else{
             return response()->json([
                 "status"        => true,
-                "grandTotal"    => number_format($grandtotal,2),
-                "ShippingCharge"=> number_format(0,2),
+                "grandTotal"    => number_format($subtotal,2),
+                "ShippingCharge"=> number_format(0,2)
             ]);
         }
     }
-    public function getCountries(Request $request){
-        $temCountry=[];
-        if($request->term !=""){
-            $countries = Country::where('name','like','%'.$request->term.'%')->get();
-            if($countries !=null){
-                foreach($countries as $key){
-                    $temCountry[]=array('id'=>$key->id, 'text'=>$key->name);
+    // public function getCountries(Request $request){
+    //     $temCountry=[];
+    //     if($request->term !=""){
+    //         $countries = Country::where('name','like','%'.$request->term.'%')->get();
+    //         if($countries !=null){
+    //             foreach($countries as $key){
+    //                 $temCountry[]=array('id'=>$key->id, 'text'=>$key->name);
 
-                }
-            }
-        }
-        return response()->json([
-            'tags'=>    $temCountry,
-            'status'=>  true
-        ]);
-    }
+    //             }
+    //         }
+    //     }
+    //     return response()->json([
+    //         'tags'=>    $temCountry,
+    //         'status'=>  true
+    //     ]);
+    // }
 }

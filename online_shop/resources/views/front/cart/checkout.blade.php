@@ -47,8 +47,8 @@
                                     <div class="col-md-12">
                                        <h2 class="h5 mb-3">Search a Country</h2>
                                        <div class="mb-3">
-                                          <select name="country" id="country" class="form-control ">
-                                             <!-- <option value="">Select a Country</option> -->
+                                          <select name="country" id="country" class="form-control">
+                                             <option value="">Select a Country</option>
                                              @if($countries->isNotEmpty())
                                                 @foreach($countries as $country)
                                                    <option {{ (!empty($customerAddress) && $customerAddress->country_id == $country->id) ? 'selected' : '' }} value="{{$country->id}}">{{$country->name}}</option>
@@ -123,7 +123,7 @@
                                  </div>
                                  <div class="d-flex justify-content-between mt-2">
                                     <div class="h6"><strong>Shipping</strong></div>
-                                    <div class="h6"><strong id="shippingAmount">${{(number_format($totalShippingCharge,2))}}</strong></div>
+                                    <div class="h6"><strong id="ShippingAmount">${{(number_format($totalShippingCharge,2))}}</strong></div>
                                  </div>
                                  <div class="d-flex justify-content-between mt-2 summery-end">
                                     <div class="h5"><strong>Total</strong></div>
@@ -221,7 +221,7 @@
                      $("#email").removeClass('is-invalid');
                   }
                   if(errors.country){
-                     $("#lcountry").siblings('p').addClass('invalid-feedback').html(errors.country);
+                     $("#country").siblings('p').addClass('invalid-feedback').html(errors.country);
                      $("#country").addClass('is-invalid');
                   }else{
                      $("#country").siblings('p').removeClass('is-invalid').html('');
@@ -295,6 +295,20 @@
             },
          });
       });
+      $("#country").change(function(){
+         $.ajax({
+            url      :  '{{ route("get.orderSummary") }}',
+            type     :  'post',
+            data     :  { country_id: $(this).val()},
+            dataType :  'json',
+            success  :  function(response){
+               if(response.status == true){
+                  $("#ShippingAmount").html('$'+response.ShippingCharge);
+                  $("#grandTotal").html('$'+response.grandTotal);
+               }
+            }
+         });
+      });
       // $('.searchCountry').select2({
       //    ajax: {
       //       url: '{{ route("get.countries") }}',
@@ -309,19 +323,6 @@
       //       }
       //    }
       // });
-      $("#country").change(function(){
-         $.ajax({
-            url      :  '{{ route("get.orderSummary") }}',
-            type     :  'post',
-            data     :  { country_id: $(this).val()},
-            dataType :  'json',
-            success  :  function(response){
-               if(response.status == true){
-                  ("#shippingAmount").htm(response.ShippingCharge);
-                  ("#grandTotal").htm(response.grandTotal);
-               }
-            }
-         });
-      });
+      
    </script>
 @endsection

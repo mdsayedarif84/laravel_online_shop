@@ -17,6 +17,7 @@ use App\Http\Controllers\Front\Shop\ShopController;
 use App\Http\Controllers\Front\Cart\CartController;
 use App\Http\Controllers\Front\CustomerAuth\AuthController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -32,7 +33,7 @@ Route::get('/checkout', [CartController::class,'checkout'])->name('checkout');
 Route::post('/process-checkout', [CartController::class,'processCheckout'])->name('front.processCheckout');
 Route::get('/thanks/{orderId}', [CartController::class,'thankYou'])->name('thankYou');
 Route::post('/get-orderSummary', [CartController::class, 'getOrderSummary'])->name('get.orderSummary');
-Route::get('/get-country', [CartController::class, 'getCountries'])->name('get.countries');
+// Route::get('/get-country', [CartController::class, 'getCountries'])->name('get.countries');
 
 
 Route::group(['prefix'=>'account'],function(){
@@ -102,6 +103,8 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/shipping/edit/{id}', [ShippingController::class, 'edit'])->name('shipping.edit');
         Route::put('/shipping/update/{id}', [ShippingController::class, 'update'])->name('shipping.update');
         Route::delete('/shipping/delete/{id}', [ShippingController::class, 'delete'])->name('shipping.delete');
+        // Route::get('/admin-get-country', [ShippingController::class, 'adminGetCountries'])->name('admin.getCountries');
+
 
 
                 //temp-images.create
