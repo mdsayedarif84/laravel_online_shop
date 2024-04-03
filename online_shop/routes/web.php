@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Category\CategoryController;
 use App\Http\Controllers\Admin\Category\SubCategoryController;
 use App\Http\Controllers\Admin\TempImage\TempImagesController;
 use App\Http\Controllers\Admin\Brand\BrandController;
+use App\Http\Controllers\Admin\Cupon\DiscountCodeController;
 use App\Http\Controllers\Admin\Product\ProductController;
 use App\Http\Controllers\Admin\Product\ProductSubCategoryController;
 use App\Http\Controllers\Admin\Product\ProductImageController;
@@ -22,44 +23,42 @@ use Illuminate\Support\Str;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-Route::get('/', [FrontController::class,'index'])->name('front.home');
-Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class,'index'])->name('front.shop');
-Route::get('/product/{slug}', [ShopController::class,'product'])->name('front.product');
-Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('front.addToCart');
-Route::get('/cart', [CartController::class,'cart'])->name('cart');
-Route::post('/update-cart', [CartController::class,'updateCart'])->name('front.updateCart');
-Route::post('/remove-cart', [CartController::class,'removeItem'])->name('front.removeCart');
-Route::get('/checkout', [CartController::class,'checkout'])->name('checkout');
-Route::post('/process-checkout', [CartController::class,'processCheckout'])->name('front.processCheckout');
-Route::get('/thanks/{orderId}', [CartController::class,'thankYou'])->name('thankYou');
+Route::get('/', [FrontController::class, 'index'])->name('front.home');
+Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class, 'index'])->name('front.shop');
+Route::get('/product/{slug}', [ShopController::class, 'product'])->name('front.product');
+Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('front.addToCart');
+Route::get('/cart', [CartController::class, 'cart'])->name('cart');
+Route::post('/update-cart', [CartController::class, 'updateCart'])->name('front.updateCart');
+Route::post('/remove-cart', [CartController::class, 'removeItem'])->name('front.removeCart');
+Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+Route::post('/process-checkout', [CartController::class, 'processCheckout'])->name('front.processCheckout');
+Route::get('/thanks/{orderId}', [CartController::class, 'thankYou'])->name('thankYou');
 Route::post('/get-orderSummary', [CartController::class, 'getOrderSummary'])->name('get.orderSummary');
 // Route::get('/get-country', [CartController::class, 'getCountries'])->name('get.countries');
 
 
-Route::group(['prefix'=>'account'],function(){
-    Route::group(['middleware' => 'guest'],function(){
-        Route::get('/login', [AuthController::class,'login'])->name('login');
-        Route::post('/authenticate-login', [AuthController::class,'authenticate'])->name('authenticate');
-        Route::get('/register', [AuthController::class,'register'])->name('register');
-        Route::post('/process-register', [AuthController::class,'processRegister'])->name('process-register');
+Route::group(['prefix' => 'account'], function () {
+    Route::group(['middleware' => 'guest'], function () {
+        Route::get('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/authenticate-login', [AuthController::class, 'authenticate'])->name('authenticate');
+        Route::get('/register', [AuthController::class, 'register'])->name('register');
+        Route::post('/process-register', [AuthController::class, 'processRegister'])->name('process-register');
     });
-    Route::group(['middleware' => 'auth'],function(){
-        Route::get('/profile', [AuthController::class,'profile'])->name('profile');
-        Route::get('/logout', [AuthController::class,'logout'])->name('logout');
-
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+        Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 });
 
-Route::group(['prefix'=>'admin'],function(){
-    Route::group(['middleware' => 'admin.guest'],function(){
+Route::group(['prefix' => 'admin'], function () {
+    Route::group(['middleware' => 'admin.guest'], function () {
         Route::get('/login', [AdminLoginController::class, 'index'])->name('admin.login');
         Route::post('/authenticate', [AdminLoginController::class, 'authenticate'])->name('admin.authenticate');
-
     });
-    Route::group(['middleware' => 'admin.auth'],function(){
+    Route::group(['middleware' => 'admin.auth'], function () {
         Route::get('/dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
         Route::get('/logout', [HomeController::class, 'logout'])->name('admin.logout');
-        
+
         //Cateogry Routes
         Route::get('/category/list', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -104,20 +103,27 @@ Route::group(['prefix'=>'admin'],function(){
         Route::put('/shipping/update/{id}', [ShippingController::class, 'update'])->name('shipping.update');
         Route::delete('/shipping/delete/{id}', [ShippingController::class, 'delete'])->name('shipping.delete');
         // Route::get('/admin-get-country', [ShippingController::class, 'adminGetCountries'])->name('admin.getCountries');
+        //Cupon For Discount
+        // Route::get('/cupon/create', [ShippingController::class, 'create'])->name('cupon.create');
+        Route::get('/cupon/create', [DiscountCodeController::class, 'create'])->name('cupon.create');
+        Route::post('/cupon/store', [DiscountCodeController::class, 'store'])->name('cupon.store');
+        // Route::get('/cupon/edit/{id}', [DiscountCodeController::class, 'edit'])->name('cupon.edit');
+        // Route::put('/cupon/update/{id}', [DiscountCodeController::class, 'update'])->name('cupon.update');
+        // Route::delete('/cupon/delete/{id}', [DiscountCodeController::class, 'delete'])->name('cupon.delete');
 
 
 
-                //temp-images.create
+        //temp-images.create
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
 
-        Route::get('/getSlug',function(Request $request){
+        Route::get('/getSlug', function (Request $request) {
             $slug = '';
-            if(!empty($request->title)){
-               $slug = Str::slug($request->title);
+            if (!empty($request->title)) {
+                $slug = Str::slug($request->title);
             }
             return response()->json([
-                'status'=> true,
-                'slug'=> $slug,
+                'status' => true,
+                'slug' => $slug,
             ]);
         })->name('getSlug');
     });
