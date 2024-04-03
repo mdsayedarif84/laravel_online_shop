@@ -28,6 +28,9 @@ class DiscountCodeController extends Controller
     }
     public function index()
     {
+        $cupons     =   DiscountCupon::latest();
+        $cupons =   $cupons->paginate(4);
+        return view('admin.cupon.cupon_list', ['cupons' => $cupons]);
     }
     public function create()
     {
@@ -93,8 +96,14 @@ class DiscountCodeController extends Controller
             ]);
         }
     }
-    public function edit()
+    public function edit($id, Request $request)
     {
+        $cupon  =   DiscountCupon::find($id);
+        if (empty($cupon)) {
+            $request->session()->flash('error', 'Records Not Found!');
+            return redirect()->route('cupon.index');
+        }
+        return view('admin.cupon.cupon_edit', ['cupon' => $cupon]);
     }
     public function update()
     {

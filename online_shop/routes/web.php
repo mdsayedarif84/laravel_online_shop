@@ -104,10 +104,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::delete('/shipping/delete/{id}', [ShippingController::class, 'delete'])->name('shipping.delete');
         // Route::get('/admin-get-country', [ShippingController::class, 'adminGetCountries'])->name('admin.getCountries');
         //Cupon For Discount
-        // Route::get('/cupon/create', [ShippingController::class, 'create'])->name('cupon.create');
+        Route::get('/cupons', [DiscountCodeController::class, 'index'])->name('cupon.index');
         Route::get('/cupon/create', [DiscountCodeController::class, 'create'])->name('cupon.create');
         Route::post('/cupon/store', [DiscountCodeController::class, 'store'])->name('cupon.store');
-        // Route::get('/cupon/edit/{id}', [DiscountCodeController::class, 'edit'])->name('cupon.edit');
+        Route::get('/cupon/edit/{id}', [DiscountCodeController::class, 'edit'])->name('cupon.edit');
         // Route::put('/cupon/update/{id}', [DiscountCodeController::class, 'update'])->name('cupon.update');
         // Route::delete('/cupon/delete/{id}', [DiscountCodeController::class, 'delete'])->name('cupon.delete');
 

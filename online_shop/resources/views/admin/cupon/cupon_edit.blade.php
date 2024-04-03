@@ -1,6 +1,6 @@
 @extends('admin.dashboard.dashboard')
 @section('title')
-Create Cupon
+Edit Cupon
 @endsection
 @section('body')
 <div class="content-wrapper">
@@ -9,7 +9,7 @@ Create Cupon
       <div class="container-fluid my-2">
          <div class="row mb-2">
             <div class="col-sm-6">
-               <h1>Create Cupon Code</h1>
+               <h1>Edit Cupon Code</h1>
             </div>
             <div class="col-sm-6 text-right">
                <a href="{{route('cupon.index')}}" class="btn btn-primary">Cupon List</a>
@@ -29,28 +29,28 @@ Create Cupon
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="code">Code</label>
-                           <input type="text" name="code" id="code" class="form-control" placeholder="code">
+                           <input type="text" name="code" value="{{$cupon->code}}" id="code" class="form-control" placeholder="code">
                            <p></p>
                         </div>
                      </div>
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="name">Name</label>
-                           <input type="text" name="name" id="name" class="form-control" placeholder="name">
+                           <input type="text" name="name" value="{{$cupon->name}}" id="name" class="form-control" placeholder="name">
                            <p></p>
                         </div>
                      </div>
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="max_uses">Max Uses</label>
-                           <input type="number" name="max_uses" id="max_uses" class="form-control" placeholder="max_uses">
+                           <input type="number" name="max_uses" value="{{$cupon->max_uses}}" id="max_uses" class="form-control" placeholder="max_uses">
                            <p></p>
                         </div>
                      </div>
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="max_uses_user">Max Uses User</label>
-                           <input type="text" name="max_uses_user" id="max_uses_user" class="form-control" placeholder="max_uses_user">
+                           <input type="text" name="max_uses_user" id="max_uses_user" value="{{$cupon->max_uses_user}}" class="form-control" placeholder="max_uses_user">
                            <p></p>
                         </div>
                      </div>
@@ -61,8 +61,8 @@ Create Cupon
                         <div class="mb-3">
                            <label for="status">Status</label>
                            <select name="status" id="status" class="form-control">
-                              <option value="1">Active</option>
-                              <option value="0">Block</option>
+                              <option {{ ($cupon->status == 1) ?'selected' : '' }} value="1">Active</option>
+                              <option {{ ($cupon->status == 0) ?'selected' : '' }} value="0">Block</option>
                            </select>
                            <p></p>
                         </div>
@@ -71,8 +71,8 @@ Create Cupon
                         <div class="mb-3">
                            <label for="type">Type</label>
                            <select name="type" id="type" class="form-control">
-                              <option value="percent">Percent</option>
-                              <option value="fixed">Fixed</option>
+                              <option {{ ($cupon->type == 'percent') ?'selected' : '' }} value="percent">Percent</option>
+                              <option {{ ($cupon->type == 'fixed') ?'selected' : '' }} value="fixed">Fixed</option>
                            </select>
                            <p></p>
                         </div>
@@ -84,7 +84,7 @@ Create Cupon
                      <div class="col-md-8">
                         <div class="mb-3">
                            <label for="description">Description</label>
-                           <textarea type="text" name="description" id="description" class="form-control" cols="30" rows="5"></textarea>
+                           <textarea type="text" name="description" id="description" value="{{$cupon->description}}" class="form-control" cols="30" rows="5"></textarea>
                            <p></p>
                         </div>
                      </div>
@@ -94,28 +94,28 @@ Create Cupon
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="discount_amount">Discount Amount </label>
-                           <input type="number" name="discount_amount" id="discount_amount" class="form-control" placeholder="discount_amount">
+                           <input type="number" name="discount_amount" value="{{$cupon->discount_amount}}" id="discount_amount" class="form-control" placeholder="discount_amount">
                            <p></p>
                         </div>
                      </div>
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="min_amount">Min Amount</label>
-                           <input type="number" name="min_amount" id="min_amount" class="form-control" placeholder="min_amount">
+                           <input type="number" name="min_amount" value="{{$cupon->min_amount}}" id="min_amount" class="form-control" placeholder="min_amount">
                            <p></p>
                         </div>
                      </div>
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="starts_at">Starts At</label>
-                           <input type="text" name="starts_at" id="starts_at" class="form-control" placeholder="starts_at">
+                           <input type="text" name="starts_at" value="{{$cupon->starts_at}}" id="starts_at" class="form-control" placeholder="starts_at">
                            <p></p>
                         </div>
                      </div>
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="expires_at">Expire At</label>
-                           <input type="text" name="expires_at" id="expires_at" class="form-control" placeholder="expires_at">
+                           <input type="text" name="expires_at" value="{{$cupon->expires_at}}" id="expires_at" class="form-control" placeholder="expires_at">
                            <p></p>
                         </div>
                      </div>
