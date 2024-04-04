@@ -26,9 +26,12 @@ class DiscountCodeController extends Controller
         ];
         return ['rules' => $rules, 'messages' => $messages];
     }
-    public function index()
+    public function index(Request $request)
     {
         $cupons     =   DiscountCupon::latest();
+        if (!empty($request->get('keyword'))) {
+            $cupons = $cupons->where('name', 'like', '%' . $request->get('keyword') . '%');
+        }
         $cupons =   $cupons->paginate(4);
         return view('admin.cupon.cupon_list', ['cupons' => $cupons]);
     }
@@ -44,9 +47,9 @@ class DiscountCodeController extends Controller
         $validator      = Validator::make($request->all(), $rules, $messages);
         if ($validator->passes()) {
             // Starting Date Must be greater than current date
-            $startsTime   = $request->starts_at;
+            $startsTime     = $request->starts_at;
             if (!empty($startsTime)) {
-                $now    =   Carbon::now();
+                $now        =   Carbon::now();
                 $startsAt   =   Carbon::createFromFormat('Y-m-d H:i:s', $startsTime);
                 if ($startsAt->lte($now) == true) {
                     return response()->json([
@@ -56,10 +59,10 @@ class DiscountCodeController extends Controller
                 }
             }
             // expire date must be greater than starting date
-            $startsTime   = $request->starts_at;
-            $expiresTime   = $request->expires_at;
+            $startsTime     = $request->starts_at;
+            $expiresTime    = $request->expires_at;
             if (!empty($startsTime) && !empty($expiresTime)) {
-                $expiresAt    =   Carbon::createFromFormat('Y-m-d H:i:s', $expiresTime);
+                $expiresAt  =   Carbon::createFromFormat('Y-m-d H:i:s', $expiresTime);
                 $startsAt   =   Carbon::createFromFormat('Y-m-d H:i:s', $startsTime);
                 if ($expiresAt->gt($startsAt) == false) {
                     return response()->json([
@@ -69,18 +72,18 @@ class DiscountCodeController extends Controller
                 }
             }
 
-            $discountCode   =   new DiscountCupon();
-            $discountCode->code =   $request->code;
-            $discountCode->name =   $request->name;
-            $discountCode->description =   $request->description;
-            $discountCode->max_uses =   $request->max_uses;
-            $discountCode->max_uses_user =   $request->max_uses_user;
-            $discountCode->type =   $request->type;
-            $discountCode->discount_amount =   $request->discount_amount;
-            $discountCode->min_amount =   $request->min_amount;
-            $discountCode->status =   $request->status;
-            $discountCode->starts_at =   $request->starts_at;
-            $discountCode->expires_at =   $request->expires_at;
+            $discountCode                   =   new DiscountCupon();
+            $discountCode->code             =   $request->code;
+            $discountCode->name             =   $request->name;
+            $discountCode->description      =   $request->description;
+            $discountCode->max_uses         =   $request->max_uses;
+            $discountCode->max_uses_user    =   $request->max_uses_user;
+            $discountCode->type             =   $request->type;
+            $discountCode->discount_amount  =   $request->discount_amount;
+            $discountCode->min_amount       =   $request->min_amount;
+            $discountCode->status           =   $request->status;
+            $discountCode->starts_at        =   $request->starts_at;
+            $discountCode->expires_at       =   $request->expires_at;
             $discountCode->save();
 
             $message =  'Discount Cupon Save  Successfully';
@@ -105,10 +108,79 @@ class DiscountCodeController extends Controller
         }
         return view('admin.cupon.cupon_edit', ['cupon' => $cupon]);
     }
-    public function update()
+    public function update($id, Request $request)
     {
+        $cupon  =   DiscountCupon::find($id);
+        if (empty($cupon)) {
+            $request->session()->flash('error', 'Cupon Not Found');
+            return response()->json([
+                'status'        => false,
+                'notFound'      => true,
+                'message'       => 'Cupon Not Found',
+            ]);
+        }
+        $validationData     = $this->validateRules($request);
+        $rules              = $validationData['rules'];
+        $messages           = $validationData['messages'];
+        $validator          = Validator::make($request->all(), $rules, $messages);
+        if ($validator->passes()) {
+            // expire date must be greater than starting date
+            $startsTime     = $request->starts_at;
+            $expiresTime    = $request->expires_at;
+            if (!empty($startsTime) && !empty($expiresTime)) {
+                $expiresAt  =   Carbon::createFromFormat('Y-m-d H:i:s', $expiresTime);
+                $startsAt   =   Carbon::createFromFormat('Y-m-d H:i:s', $startsTime);
+                if ($expiresAt->gt($startsAt) == false) {
+                    return response()->json([
+                        'status'    =>  false,
+                        'errors'    =>  ['expires_at' => 'Expire date must be greater than Starts date']
+                    ]);
+                }
+            }
+
+            $cupon->code            =   $request->code;
+            $cupon->name            =   $request->name;
+            $cupon->description     =   $request->description;
+            $cupon->max_uses        =   $request->max_uses;
+            $cupon->max_uses_user   =   $request->max_uses_user;
+            $cupon->type            =   $request->type;
+            $cupon->discount_amount =   $request->discount_amount;
+            $cupon->min_amount      =   $request->min_amount;
+            $cupon->status          =   $request->status;
+            $cupon->starts_at       =   $request->starts_at;
+            $cupon->expires_at      =   $request->expires_at;
+            $cupon->save();
+
+            $message =  'Discount Cupon Update  Successfully';
+            session()->flash('success', $message);
+            return response()->json([
+                'status'    => true,
+                'message'   => $message
+            ]);
+        } else {
+            return response()->json([
+                'status'    =>  false,
+                'errors'    =>  $validator->errors()
+            ]);
+        }
     }
-    public function delete()
+    public function delete(Request $request, $id)
     {
+        $cupon  =   DiscountCupon::find($id);
+        if (empty($cupon)) {
+            $message =  'Cupon Not Found';
+            session()->flash('error', $message);
+            return response()->json([
+                'status'        => false,
+                'message'       => $message,
+            ]);
+        }
+        $cupon->delete();
+        $message    =  'Coupun Delete  Successfully';
+        session()->flash('success', $message);
+        return response()->json([
+            'status' => true,
+            'message' => $message
+        ]);
     }
 }

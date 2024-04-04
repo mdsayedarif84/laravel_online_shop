@@ -84,7 +84,9 @@ Edit Cupon
                      <div class="col-md-8">
                         <div class="mb-3">
                            <label for="description">Description</label>
-                           <textarea type="text" name="description" id="description" value="{{$cupon->description}}" class="form-control" cols="30" rows="5"></textarea>
+                           <textarea type="text" name="description" id="description" value="{{$cupon->description}}" class="form-control" cols="30" rows="5">
+                           {{$cupon->description}}
+                           </textarea>
                            <p></p>
                         </div>
                      </div>
@@ -123,7 +125,7 @@ Edit Cupon
                </div>
             </div>
             <div class="pb-5 pt-3">
-               <button type="submit" class="btn btn-primary">Create</button>
+               <button type="submit" class="btn btn-primary">Update</button>
                <a href="{{route('categories.index')}}" class="btn btn-outline-dark ml-3">Cancel</a>
             </div>
          </form>
@@ -150,8 +152,8 @@ Edit Cupon
       var element = $(this);
       // $("button[type=submit)]").prop('disabled', true);
       $.ajax({
-         url: '{{route("cupon.store")}}',
-         type: 'POST',
+         url: '{{route("cupon.update",$cupon->id)}}',
+         type: 'put',
          data: element.serializeArray(),
          dataType: 'json',
          success: function(response) {

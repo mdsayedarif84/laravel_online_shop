@@ -108,14 +108,14 @@ Create Cupon
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="starts_at">Starts At</label>
-                           <input type="text" name="starts_at" id="starts_at" class="form-control" placeholder="starts_at">
+                           <input type="text" name="starts_at" id="starts_at" autocomplete="off" class="form-control" placeholder="starts_at">
                            <p></p>
                         </div>
                      </div>
                      <div class="col-md-3">
                         <div class="mb-3">
                            <label for="expires_at">Expire At</label>
-                           <input type="text" name="expires_at" id="expires_at" class="form-control" placeholder="expires_at">
+                           <input type="text" name="expires_at" id="expires_at" autocomplete="off" class="form-control" placeholder="expires_at">
                            <p></p>
                         </div>
                      </div>
@@ -124,7 +124,7 @@ Create Cupon
             </div>
             <div class="pb-5 pt-3">
                <button type="submit" class="btn btn-primary">Create</button>
-               <a href="{{route('categories.index')}}" class="btn btn-outline-dark ml-3">Cancel</a>
+               <a href="{{route('cupon.index')}}" class="btn btn-outline-dark ml-3">Cancel</a>
             </div>
          </form>
       </div>
