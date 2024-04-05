@@ -15,6 +15,7 @@ Checkout
          </div>
       </div>
    </section>
+   @include('front.message.message')
    <section class="section-9 pt-4">
       <div class="container">
          <form name="orderForm" id="orderForm" action="" method="POST">
@@ -121,6 +122,10 @@ Checkout
                            <div class="h6"><strong>Subtotal</strong></div>
                            <div class="h6"><strong>${{Cart::subtotal()}}</strong></div>
                         </div>
+                        <div class="d-flex justify-content-between summery-end">
+                           <div class="h6"><strong>Discount</strong></div>
+                           <div class="h6"><strong id="discout_value">${{ $discount}}</strong></div>
+                        </div>
                         <div class="d-flex justify-content-between mt-2">
                            <div class="h6"><strong>Shipping</strong></div>
                            <div class="h6"><strong id="ShippingAmount">${{(number_format($totalShippingCharge,2))}}</strong></div>
@@ -131,7 +136,19 @@ Checkout
                         </div>
                      </div>
                   </div>
-
+                  <div class="input-group apply-coupan mt-4">
+                     <input type="text" placeholder="Coupon Code" class="form-control" name="discount_code" id="discount_code">
+                     <button class="btn btn-dark" type="button" id="apply_discount">Apply Coupon</button>
+                  </div>
+                  @if(Session::has('code'))
+                  <div class="mt-4">
+                     <div class="row">
+                        <a class="btn btn-sm btn-danger" id="removeDiscount">
+                           <strong class="mx-auto">{{ Session::get('code')->code }} </strong> <i class=" fa fa-times"></i>
+                        </a>
+                     </div>
+                  </div>
+                  @endif
                   <div class="card payment-form ">
                      <h3 class="card-title h5 mb-3">Payment Method</h3>
                      <div class="form-group row">
@@ -311,19 +328,40 @@ Checkout
          }
       });
    });
-   // $('.searchCountry').select2({
-   //    ajax: {
-   //       url: '{{ route("get.countries") }}',
-   //       dataType: 'json',
-   //       tags: true,
-   //       multiple: true,
-   //       minimumInputLength: 1,
-   //       processResults: function (data) {
-   //             return {
-   //                results: data.tags
-   //             };
-   //       }
-   //    }
-   // });
+   $('#apply_discount').click(function() {
+      $.ajax({
+         url: '{{ route("front.applyDiscount") }}',
+         type: 'post',
+         data: {
+            code: $('#discount_code').val(),
+            country_id: $('#country').val()
+         },
+         dataType: 'json',
+         success: function(response) {
+            if (response.status == true) {
+               $("#ShippingAmount").html('$' + response.ShippingCharge);
+               $("#grandTotal").html('$' + response.grandTotal);
+               $("#discout_value").html('$' + response.discount);
+            }
+         }
+      });
+   });
+   $('#removeDiscount').click(function() {
+      $.ajax({
+         url: '{{ route("front.removeCoupon") }}',
+         type: 'post',
+         data: {
+            country_id: $('#country').val()
+         },
+         dataType: 'json',
+         success: function(response) {
+            if (response.status == true) {
+               $("#ShippingAmount").html('$' + response.ShippingCharge);
+               $("#grandTotal").html('$' + response.grandTotal);
+               $("#discout_value").html('$' + response.discount);
+            }
+         }
+      });
+   });
 </script>
 @endsection

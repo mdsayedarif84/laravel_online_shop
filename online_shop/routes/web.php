@@ -34,6 +34,8 @@ Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 Route::post('/process-checkout', [CartController::class, 'processCheckout'])->name('front.processCheckout');
 Route::get('/thanks/{orderId}', [CartController::class, 'thankYou'])->name('thankYou');
 Route::post('/get-orderSummary', [CartController::class, 'getOrderSummary'])->name('get.orderSummary');
+Route::post('/apply-discount', [CartController::class, 'applyDiscount'])->name('front.applyDiscount');
+Route::post('/remove-discount', [CartController::class, 'removeCoupon'])->name('front.removeCoupon');
 // Route::get('/get-country', [CartController::class, 'getCountries'])->name('get.countries');
 
 
