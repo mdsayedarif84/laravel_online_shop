@@ -8,11 +8,14 @@
             </a>
          </div>
          <div class="col-lg-6 col-6 text-left  d-flex justify-content-end align-items-center">
-            <a href="{{route('profile')}}" class="nav-link text-dark">My Account</a>
+            @if(Auth::check())
+            <a href="{{route('account.profile')}}" class="nav-link text-dark">My Account</a>
+            @else
+            <a href="{{route('login')}}" class="nav-link text-dark">Login/Register</a>
+            @endif
             <form action="">
                <div class="input-group">
-                  <input type="text" placeholder="Search For Products" class="form-control"
-                     aria-label="Amount (to the nearest dollar)">
+                  <input type="text" placeholder="Search For Products" class="form-control" aria-label="Amount (to the nearest dollar)">
                   <span class="input-group-text">
                      <i class="fa fa-search"></i>
                   </span>
@@ -30,9 +33,7 @@
             <span class="h2 text-uppercase text-primary bg-dark">Online</span>
             <span class="h2 text-uppercase text-white px-2">SHOP</span>
          </a>
-         <button class="navbar-toggler menu-btn" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
+         <button class="navbar-toggler menu-btn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <!-- <span class="navbar-toggler-icon icon-menu"></span> -->
             <i class="navbar-toggler-icon fas fa-bars"></i>
          </button>
@@ -42,22 +43,22 @@
           				<a class="nav-link active" aria-current="page" href="index.php" title="Products">Home</a>
         			</li> -->
                @if(getCategories()->isNotEmpty())
-                  @foreach(getCategories() as $category)
-                     <li class="nav-item dropdown">
-                        <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                           {{ $category->name }}
-                        </button>
-                        @if($category->sub_category->isNotEmpty())
-                           <ul class="dropdown-menu dropdown-menu-dark">
-                              @foreach($category->sub_category as $sub_category)
-                                 <li>
-                                    <a class="dropdown-item nav-link" href="{{ route('front.shop',[$category->slug, $sub_category->slug]) }}">{{ $sub_category->name }}</a>
-                                 </li>
-                              @endforeach
-                           </ul>
-                        @endif
+               @foreach(getCategories() as $category)
+               <li class="nav-item dropdown">
+                  <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                     {{ $category->name }}
+                  </button>
+                  @if($category->sub_category->isNotEmpty())
+                  <ul class="dropdown-menu dropdown-menu-dark">
+                     @foreach($category->sub_category as $sub_category)
+                     <li>
+                        <a class="dropdown-item nav-link" href="{{ route('front.shop',[$category->slug, $sub_category->slug]) }}">{{ $sub_category->name }}</a>
                      </li>
-                  @endforeach
+                     @endforeach
+                  </ul>
+                  @endif
+               </li>
+               @endforeach
                @endif
             </ul>
          </div>

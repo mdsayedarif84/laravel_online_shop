@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Front\CustomerAuth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -70,9 +72,9 @@ class AuthController extends Controller
         );
         if ($validator->passes()) {
             if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
-                // if(session()->has('url.intended ')){
-                //     return redirect(session()->get('url.intended'));
-                // }
+                if (session()->has('url.intended ')) {
+                    return redirect(session()->get('url.intended'));
+                }
                 $user                   =   Auth::user()->id;
                 if ($user) {
                     return redirect()->route('checkout');
@@ -101,5 +103,34 @@ class AuthController extends Controller
         $message =  'You Successfully Logout';
         Auth::logout();
         return redirect()->route('login')->with('success', $message);
+    }
+    public function userList(Request $request)
+    {
+        $users      =   User::latest();
+        $keyword    =   $request->get('keyword');
+        if (!empty($keyword)) {
+            $users  = $users->where('name', 'like', '%' . $keyword . '%');
+        }
+        $users      =   $users->paginate(3);
+        return view('admin.users.user_list', compact('users'));
+    }
+    public function orders()
+    {
+        $data   =   [];
+        $user   =   Auth::user();
+        $orders =   Order::where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
+        $data['orders'] =   $orders;
+        return view('front.customer-account.order', $data);
+    }
+    public function orderDetails($id)
+    {
+        $data   =   [];
+        $user   =   Auth::user();
+        $order =   Order::where('user_id', $user->id)->where('id', $id)->first();
+        $data['order'] =   $order;
+
+        $orderitems =   OrderItem::where('order_id', $id)->get();
+        $data['orderitems'] =   $orderitems;
+        return view('front.customer-account.order_details', $data);
     }
 }

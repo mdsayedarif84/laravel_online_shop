@@ -140,15 +140,16 @@ Checkout
                      <input type="text" placeholder="Coupon Code" class="form-control" name="discount_code" id="discount_code">
                      <button class="btn btn-dark" type="button" id="apply_discount">Apply Coupon</button>
                   </div>
-                  @if(Session::has('code'))
-                  <div class="mt-4">
-                     <div class="row">
-                        <a class="btn btn-sm btn-danger" id="removeDiscount">
-                           <strong class="mx-auto">{{ Session::get('code')->code }} </strong> <i class=" fa fa-times"></i>
+                  <div id="discount_response_wrapper">
+                     @if(Session::has('code'))
+                     <div class="pt-4" id="discount_response">
+                        <a class="btn-danger btn btn-block w-100" id="removeDiscount">
+                           <strong class="mx-auto">{{ Session::get('code')->code }} </strong>
+                           <button class="btn btn-outline-dark" type="button" id="apply_discount">Click For Remove <i class=" fa fa-times"></i></button>
                         </a>
                      </div>
+                     @endif
                   </div>
-                  @endif
                   <div class="card payment-form ">
                      <h3 class="card-title h5 mb-3">Payment Method</h3>
                      <div class="form-group row">
@@ -342,11 +343,14 @@ Checkout
                $("#ShippingAmount").html('$' + response.ShippingCharge);
                $("#grandTotal").html('$' + response.grandTotal);
                $("#discout_value").html('$' + response.discount);
+               $("#discount_response_wrapper").html(response.discountString);
+            } else {
+               $("#discount_response_wrapper").html("<span class='text-danger'>" + response.message + "</span>");
             }
          }
       });
    });
-   $('#removeDiscount').click(function() {
+   $('body').on('click', "#removeDiscount", function() {
       $.ajax({
          url: '{{ route("front.removeCoupon") }}',
          type: 'post',
@@ -359,9 +363,14 @@ Checkout
                $("#ShippingAmount").html('$' + response.ShippingCharge);
                $("#grandTotal").html('$' + response.grandTotal);
                $("#discout_value").html('$' + response.discount);
+               $("#discount_response").html('');
+               $("#discount_code").val('');
             }
          }
       });
    });
+   // $('#removeDiscount').click(function() {
+
+   // });
 </script>
 @endsection

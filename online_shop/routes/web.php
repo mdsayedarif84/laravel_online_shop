@@ -47,7 +47,10 @@ Route::group(['prefix' => 'account'], function () {
         Route::post('/process-register', [AuthController::class, 'processRegister'])->name('process-register');
     });
     Route::group(['middleware' => 'auth'], function () {
-        Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+        Route::get('/profile', [AuthController::class, 'profile'])->name('account.profile');
+        Route::get('/order', [AuthController::class, 'orders'])->name('account.orders');
+        Route::get('/order-details/{id}', [AuthController::class, 'orderDetails'])->name('account.orderDetails');
+        Route::get('/user-list', [AuthController::class, 'userList'])->name('users.list');
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 });
@@ -104,7 +107,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/shipping/edit/{id}', [ShippingController::class, 'edit'])->name('shipping.edit');
         Route::put('/shipping/update/{id}', [ShippingController::class, 'update'])->name('shipping.update');
         Route::delete('/shipping/delete/{id}', [ShippingController::class, 'delete'])->name('shipping.delete');
-        // Route::get('/admin-get-country', [ShippingController::class, 'adminGetCountries'])->name('admin.getCountries');
+        Route::get('/admin-get-country', [ShippingController::class, 'adminGetCountries'])->name('admin.getCountries');
+
         //Cupon For Discount
         Route::get('/cupons', [DiscountCodeController::class, 'index'])->name('cupon.index');
         Route::get('/cupon/create', [DiscountCodeController::class, 'create'])->name('cupon.create');
