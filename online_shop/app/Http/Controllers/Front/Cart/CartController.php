@@ -257,19 +257,19 @@ class CartController extends Controller
                 $promoCode      =   $getCode->code;
             }
             // Shipping Calculate
-            $shippingInfo   =   ShippingCharge::where('country_id', $request->country)->first();
-            $totalQty       =   0;
-            $cartContents   =   Cart::content();
+            $shippingInfo       =   ShippingCharge::where('country_id', $request->country)->first();
+            $totalQty           =   0;
+            $cartContents       =   Cart::content();
             foreach ($cartContents as $item) {
-                $totalQty   += $item->qty;
+                $totalQty       += $item->qty;
             }
             if ($shippingInfo != null) {
-                $shipping     =   $totalQty * $shippingInfo->amount;
-                $grandtotal   =   ($subtotal - $discount) + $shipping;
+                $shipping       =   $totalQty * $shippingInfo->amount;
+                $grandtotal     =   ($subtotal - $discount) + $shipping;
             } else {
-                $shippingInfo =   ShippingCharge::where('country_id', 'rest_of_world')->first();
-                $shipping     =   $totalQty * $shippingInfo->amount;
-                $grandtotal   =   ($subtotal - $discount) + $shipping;
+                $shippingInfo   =   ShippingCharge::where('country_id', 'rest_of_world')->first();
+                $shipping       =   $totalQty * $shippingInfo->amount;
+                $grandtotal     =   ($subtotal - $discount) + $shipping;
             }
 
             $order              =   new Order();
@@ -311,9 +311,9 @@ class CartController extends Controller
             Cart::destroy();
             session()->forget('code');
             return response()->json([
-                'success' => $message,
-                'orderId' => $order->id,
-                'status' => true,
+                'success'   => $message,
+                'orderId'   => $order->id,
+                'status'    => true,
             ]);
         } else {
             //
@@ -353,8 +353,8 @@ class CartController extends Controller
                 $totalQty   += $item->qty;
             }
             if ($shippingInfo != null) {
-                $ShippingCharge     =   $totalQty * $shippingInfo->amount;
-                $grandtotal         =   ($subtotal - $discount) + $ShippingCharge;
+                $ShippingCharge         =   $totalQty * $shippingInfo->amount;
+                $grandtotal             =   ($subtotal - $discount) + $ShippingCharge;
                 return response()->json([
                     "status"            => true,
                     "discount"          => number_format($discount, 2),
@@ -363,9 +363,9 @@ class CartController extends Controller
                     "ShippingCharge"    => number_format($ShippingCharge, 2),
                 ]);
             } else {
-                $shippingInfo       =   ShippingCharge::where('country_id', 'rest_of_world')->first();
-                $ShippingCharge     =   $totalQty * $shippingInfo->amount;
-                $grandtotal         =   ($subtotal - $discount) + $ShippingCharge;
+                $shippingInfo           =   ShippingCharge::where('country_id', 'rest_of_world')->first();
+                $ShippingCharge         =   $totalQty * $shippingInfo->amount;
+                $grandtotal             =   ($subtotal - $discount) + $ShippingCharge;
                 return response()->json([
                     "status"            => true,
                     "grandTotal"        => number_format($grandtotal, 2),
@@ -389,67 +389,70 @@ class CartController extends Controller
         // dd($request->code);
         $code   =   DiscountCupon::where('code', $request->code)->first();
         if ($code == null) {
-            $message    =  'Invalid Discount Coupon';
+            $message        =  'Invalid Discount Coupon';
             session()->flash('success', $message);
             return response()->json([
-                'status' => false,
-                'message' => $message
+                'status'    => false,
+                'message'   => $message
             ]);
         }
         // Check if coupun start date valid or not
         $now    =   Carbon::now();
         // echo $now->format('Y-m-d H:i:s');
-        if ($code->starts_at != '') {
-            $startDate  =   Carbon::createFromFormat('Y-m-d H:i:s', $code->starts_at);
+        if ($code->starts_at    != '') {
+            $startDate          =   Carbon::createFromFormat('Y-m-d H:i:s', $code->starts_at);
             if ($now->lt($startDate)) {
-                $message    =  'Invalid Discount Coupon1';
+                $message        =  'Invalid Discount Coupon1';
                 session()->flash('success', $message);
                 return response()->json([
-                    'status' => false,
-                    'message' => $message
+                    'status'    => false,
+                    'message'   => $message
                 ]);
             }
         }
         if ($code->expires_at != '') {
             $endDate  =   Carbon::createFromFormat('Y-m-d H:i:s', $code->expires_at);
             if ($now->gt($endDate)) {
-                $message    =  'Invalid Discount Coupon2';
+                $message        =  'Invalid Discount Coupon2';
                 session()->flash('success', $message);
                 return response()->json([
-                    'status' => false,
-                    'message' => $message
+                    'status'    => false,
+                    'message'   => $message
                 ]);
             }
         }
         //Max uses checked
-        if ($code->max_uses > 0) {
+        $maxUses        =   $code->max_uses;
+        if ($maxUses > 0) {
             $couponUsed =   Order::where('coupon_code_id', $code->id)->count();
-            if ($couponUsed >= $code->max_uses) {
+            if ($couponUsed >= $maxUses) {
                 return response()->json([
-                    'status' => false,
-                    'message' => 'Coupon Max Uses Limit Over!!'
+                    'status'    => false,
+                    'message'   => 'Coupon Max Uses Limit ' . $maxUses . ' Over!!'
                 ]);
             }
         }
 
         //max_uses_user checked
-        if ($code->max_uses_user > 0) {
+        $maxUsesUser    =   $code->max_uses_user;
+        if ($maxUsesUser > 0) {
             $userId     =   Auth::user()->id;
             $couponUsedByUser =   Order::where(['coupon_code_id' => $code->id, 'user_id' => $userId])->count();
-            if ($couponUsedByUser >= $code->max_uses_user) {
+            if ($couponUsedByUser >= $maxUsesUser) {
                 return response()->json([
-                    'status' => false,
-                    'message' => 'Coupon Max Uses User ' . $code->max_uses_user
+                    'status'    => false,
+                    'message'   => 'Coupon Max Uses User Limit ' . $maxUsesUser
                 ]);
             }
         }
+        //Check min Amount 
         $subtotal       =   Cart::subtotal(2, '.', '');
         $minAamount     =  $code->min_amount;
         if ($minAamount > 0) {
             if ($subtotal < $minAamount) {
                 return response()->json([
-                    'status' => false,
-                    'message' => 'Your Min Amount Must Be ' . $minAamount . '!.'
+                    'status'    => false,
+                    'message'   => 'Your Min Amount Must Be ' . $minAamount . '!.'
                 ]);
             }
         }

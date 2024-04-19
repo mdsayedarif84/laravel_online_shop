@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Category\SubCategoryController;
 use App\Http\Controllers\Admin\TempImage\TempImagesController;
 use App\Http\Controllers\Admin\Brand\BrandController;
 use App\Http\Controllers\Admin\Cupon\DiscountCodeController;
+use App\Http\Controllers\Admin\Order\OrderController;
 use App\Http\Controllers\Admin\Product\ProductController;
 use App\Http\Controllers\Admin\Product\ProductSubCategoryController;
 use App\Http\Controllers\Admin\Product\ProductImageController;
@@ -117,6 +118,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::put('/cupon/{id}/update', [DiscountCodeController::class, 'update'])->name('cupon.update');
         Route::delete('/cupon/delete/{id}', [DiscountCodeController::class, 'delete'])->name('cupon.delete');
 
+        //Order Details
+        Route::get('/order-list', [OrderController::class, 'orderList'])->name('order.list');
+        Route::get('/order-details/{id}', [OrderController::class, 'orderDetails'])->name('order.details');
 
 
         //temp-images.create
