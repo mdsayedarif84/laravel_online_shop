@@ -118,8 +118,10 @@ class AuthController extends Controller
     {
         $data   =   [];
         $user   =   Auth::user();
+        // $orders     =   Order::latest()->where('user_id', $user->id)->get();
         $orders =   Order::where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
         $data['orders'] =   $orders;
+        // $orders      =   $orders->paginate(5);
         return view('front.customer-account.order', $data);
     }
     public function orderDetails($id)
@@ -131,6 +133,9 @@ class AuthController extends Controller
 
         $orderitems =   OrderItem::where('order_id', $id)->get();
         $data['orderitems'] =   $orderitems;
+
+        $orderitemsCount =   OrderItem::where('order_id', $id)->count();
+        $data['orderitemsCount'] =   $orderitemsCount;
         return view('front.customer-account.order_details', $data);
     }
 }

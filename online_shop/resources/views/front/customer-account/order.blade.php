@@ -49,6 +49,8 @@ Order
                                     <span class="badge bg-danger">Pending</span>
                                     @elseif($order->status == 'shipped')
                                     <span class="badge bg-info">Shipped</span>
+                                    @elseif($order->status == 'cancelled')
+                                    <span class="badge bg-danger">Cancelled</span>
                                     @else
                                     <span class="badge bg-success">Delivered</span>
                                     @endif
@@ -58,7 +60,9 @@ Order
                               @endforeach
                               @else
                               <tr>
-                                 <td colspan="3">Orders Not Found!!</td>
+                                 <td colspan="5" class="text-center text-danger">
+                                    <h2>Records Not Found</h2>
+                                 </td>
                               </tr>
                               @endif
                            </tbody>

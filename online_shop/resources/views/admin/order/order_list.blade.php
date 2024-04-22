@@ -23,58 +23,69 @@ Order List
       <!-- Default box -->
       <div class="container-fluid">
          <div class="card">
-            <div class="card-header">
-               <div class="card-tools">
-                  <div class="input-group input-group" style="width: 250px;">
-                     <input type="text" value="{{ Request::get('search')}}" name="search" class="form-control float-right" placeholder="Search">
-
-                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-default">
-                           <i class="fas fa-search"></i>
-                        </button>
+            <form action="" method="get">
+               <div class="card-header">
+                  <div class="card-tools">
+                     <div class="input-group input-group" style="width: 250px;">
+                        <input value="{{ Request::get('keyword')}}" type="text" name="keyword" class="form-control float-right" placeholder="Search">
+                        <div class="input-group-append">
+                           <button type="submit" class="btn btn-default">
+                              <i class="fas fa-search"></i>
+                           </button>
+                        </div>
                      </div>
                   </div>
                </div>
-            </div>
-            <div class="card-body table-responsive p-0">
-               <table class="table table-hover text-nowrap">
-                  <thead>
-                     <tr>
-                        <th>Orders #</th>
-                        <th>Customer</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Status</th>
-                        <th>Total</th>
-                        <th>Date Purchased</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     @foreach($orders as $order)
-                     <tr>
-                        <td><a href="{{route('order.details',$order->id)}}">{{$order->id}}</a></td>
-                        <td>{{$order->name}}</td>
-                        <td>{{$order->email}}</td>
-                        <td>{{$order->phone}}</td>
-                        <td>
-                           @if($order->status == 'pending')
-                           <span class="badge bg-danger">Pending</span>
-                           @elseif($order->status == 'shipped')
-                           <span class="badge bg-info">Shipped</span>
-                           @else
-                           <span class="badge bg-success">Delivered</span>
-                           @endif
-                        </td>
-                        <td>${{$order->grand_total}}</td>
-                        <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d, M, Y')}}</td>
-                     </tr>
-                     @endforeach
-                  </tbody>
-               </table>
-            </div>
-            <div class="card-footer clearfix">
-               <!-- {{ $orders->links() }} -->
-            </div>
+               <div class="card-body table-responsive p-0">
+                  <table class="table table-hover text-nowrap">
+                     <thead>
+                        <tr>
+                           <th>Orders #</th>
+                           <th>Customer</th>
+                           <th>Email</th>
+                           <th>Phone</th>
+                           <th>Status</th>
+                           <th>Total</th>
+                           <th>Date Purchased</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        @if(!empty($orders))
+                        @foreach($orders as $order)
+                        <tr>
+                           <td><a href="{{route( 'order.details',[$order->id] )}}">{{$order->id}}</a></td>
+                           <td>{{$order->name}}</td>
+                           <td>{{$order->email}}</td>
+                           <td>{{$order->mobile}}</td>
+                           <td>
+                              @if($order->status == 'pending')
+                              <span class="badge bg-danger">Pending</span>
+                              @elseif($order->status == 'shipped')
+                              <span class="badge bg-info">Shipped</span>
+                              @elseif($order->status == 'cancelled')
+                              <span class="badge bg-danger">Cancelled</span>
+                              @else
+                              <span class="badge bg-success">Delivered</span>
+                              @endif
+                           </td>
+                           <td>${{number_format($order->grand_total,2)}}</td>
+                           <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d, M, Y')}}</td>
+                        </tr>
+                        @endforeach
+                        @else
+                        <tr>
+                           <td colspan="5" class="text-center text-danger">
+                              <h2>Records Not Found</h2>
+                           </td>
+                        </tr>
+                        @endif
+                     </tbody>
+                  </table>
+               </div>
+               <div class="card-footer clearfix">
+                  {{ $orders->links() }}
+               </div>
+            </form>
          </div>
       </div>
       <!-- /.card -->

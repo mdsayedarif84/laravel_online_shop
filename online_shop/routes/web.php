@@ -24,6 +24,9 @@ use Illuminate\Support\Str;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+// Route::get('/test', function () {
+//     orderEmail(18);
+// });
 Route::get('/', [FrontController::class, 'index'])->name('front.home');
 Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class, 'index'])->name('front.shop');
 Route::get('/product/{slug}', [ShopController::class, 'product'])->name('front.product');
@@ -51,7 +54,6 @@ Route::group(['prefix' => 'account'], function () {
         Route::get('/profile', [AuthController::class, 'profile'])->name('account.profile');
         Route::get('/order', [AuthController::class, 'orders'])->name('account.orders');
         Route::get('/order-details/{id}', [AuthController::class, 'orderDetails'])->name('account.orderDetails');
-        Route::get('/user-list', [AuthController::class, 'userList'])->name('users.list');
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 });
@@ -121,8 +123,9 @@ Route::group(['prefix' => 'admin'], function () {
         //Order Details
         Route::get('/order-list', [OrderController::class, 'orderList'])->name('order.list');
         Route::get('/order-details/{id}', [OrderController::class, 'orderDetails'])->name('order.details');
+        Route::post('/order-change/status/{id}', [OrderController::class, 'changeOrderStatus'])->name('order.changeOrderStatus');
 
-
+        Route::get('/user-list', [AuthController::class, 'userList'])->name('users.list');
         //temp-images.create
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
 

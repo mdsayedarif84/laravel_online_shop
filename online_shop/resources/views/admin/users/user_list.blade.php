@@ -48,6 +48,7 @@ List User
                         <th width="60">ID</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Created Time</th>
                         <th width="100">Phone</th>
                         <th width="100">role</th>
                         <th width="100">Action</th>
@@ -60,6 +61,7 @@ List User
                         <td>{{ $user->id}}</td>
                         <td>{{ $user->name}}</td>
                         <td>{{ $user->email}}</td>
+                        <td>{{ (!empty($user->created_at)) ? \Carbon\Carbon::parse($user->created_at)->format('d, M Y  / H:i:s') : '' }}</td>
                         <td>{{ $user->phone}}</td>
                         <td>
                            @if($user->role == 1)
