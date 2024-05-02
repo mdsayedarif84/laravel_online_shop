@@ -9,13 +9,21 @@
 </head>
 
 <body>
+
    <div class="container-fluid">
       <div class="row">
          <div class="alert alert-success">
+            @if($mailData['userType'] == 'customer')
             <strong>
                <h1 class="test">Congratulations!</h1>
                <font> for your order!! </font>
             </strong> Your Order id is: #{{ $mailData['order']->id}}.
+            @else
+            <strong>
+               <font> You have received an order!! </font>
+            </strong> Order id: #{{ $mailData['order']->id}}.
+            @endif
+
             <div class="card-header pt-3">
                <div class="row invoice-info">
                   <div class="col-sm-6 invoice-col">

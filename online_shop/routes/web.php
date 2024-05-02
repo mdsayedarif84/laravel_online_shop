@@ -40,6 +40,8 @@ Route::get('/thanks/{orderId}', [CartController::class, 'thankYou'])->name('than
 Route::post('/get-orderSummary', [CartController::class, 'getOrderSummary'])->name('get.orderSummary');
 Route::post('/apply-discount', [CartController::class, 'applyDiscount'])->name('front.applyDiscount');
 Route::post('/remove-discount', [CartController::class, 'removeCoupon'])->name('front.removeCoupon');
+Route::post('/add-to-wishlist', [FrontController::class, 'addToWishlist'])->name('front.addToWishlist');
+
 // Route::get('/get-country', [CartController::class, 'getCountries'])->name('get.countries');
 
 
@@ -55,6 +57,8 @@ Route::group(['prefix' => 'account'], function () {
         Route::get('/order', [AuthController::class, 'orders'])->name('account.orders');
         Route::get('/order-details/{id}', [AuthController::class, 'orderDetails'])->name('account.orderDetails');
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/wishlist', [AuthController::class, 'wishlist'])->name('account.wishlist');
+        Route::post('/remove-product-wishlist', [AuthController::class, 'removeProductFromWishlist'])->name('account.removeProductFromWishlist');
     });
 });
 
@@ -124,6 +128,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/order-list', [OrderController::class, 'orderList'])->name('order.list');
         Route::get('/order-details/{id}', [OrderController::class, 'orderDetails'])->name('order.details');
         Route::post('/order-change/status/{id}', [OrderController::class, 'changeOrderStatus'])->name('order.changeOrderStatus');
+
+        //send invoice email
+        Route::post('/order/send-email/{id}', [OrderController::class, 'sendInvoiceEmail'])->name('order.sendInvoiceEmail');
+
 
         Route::get('/user-list', [AuthController::class, 'userList'])->name('users.list');
         //temp-images.create

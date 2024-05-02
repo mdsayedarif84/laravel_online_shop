@@ -8,6 +8,7 @@ use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Wishlist;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -71,17 +72,14 @@ class AuthController extends Controller
             ]
         );
         if ($validator->passes()) {
-            if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
+            $credentials = $request->only('email', 'password');
+            $remember = $request->filled('remember');
+            if (Auth::attempt($credentials, $remember)) {
+                // if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
                 if (session()->has('url.intended ')) {
                     return redirect(session()->get('url.intended'));
                 }
-                $user                   =   Auth::user()->id;
-                if ($user) {
-                    return redirect()->route('checkout');
-                } else {
-                    return redirect()->route('register');
-                }
-                // return redirect()->route('profile');
+                return redirect()->route('checkout');
             } else {
                 $message =  'Either Email/Password is invalid';
                 return redirect()->route('login')
@@ -137,5 +135,35 @@ class AuthController extends Controller
         $orderitemsCount =   OrderItem::where('order_id', $id)->count();
         $data['orderitemsCount'] =   $orderitemsCount;
         return view('front.customer-account.order_details', $data);
+    }
+    public function wishlist()
+    {
+        $user_id    =   Auth::user()->id;
+        $whishlists =   Wishlist::where('user_id', $user_id)->with('product')->get();
+        $data       =   [];
+        $data['whishlists']       =   $whishlists;
+        // return $data;
+        return view('front.customer-account.wishlist.wishlist', $data);
+    }
+    public function removeProductFromWishlist(Request $request)
+    {
+        $user_id    =   Auth::user()->id;
+        $whishlist =   Wishlist::where('user_id', $user_id)->where('product_id', $request->id)->first();
+        if ($whishlist == null) {
+            $message                =   'Product Already Removed';
+            session()->flash('error', $message);
+            return response()->json([
+                'status'    => true,
+                'message'   => $message
+            ]);
+        } else {
+            Wishlist::where('user_id', $user_id)->where('product_id', $request->id)->delete();
+            $message                =   'Product removed successfully!!';
+            session()->flash('success', $message);
+            return response()->json([
+                'status'    => true,
+                'message'   => $message
+            ]);
+        }
     }
 }
