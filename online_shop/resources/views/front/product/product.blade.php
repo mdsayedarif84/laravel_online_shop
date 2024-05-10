@@ -1,6 +1,6 @@
 @extends('front.home')
 @section('title')
-    Product
+Product
 @endsection
 @section('body')
 <main>
@@ -23,14 +23,14 @@
                     <div id="product-carousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner bg-light">
                             @if($product->productImage->isNotEmpty())
-                                @foreach($product->productImage as $key => $image)
-                                    <div class="carousel-item {{ ($key == 0) ? 'active'  : '' }} ">
-                                       <img class="w-100 h-100" src=" {{ asset( '/uploads/product/large/'.$image->image ) }} " alt="{{ $image->alt }}">
-                                    </div>
-                                @endforeach
+                            @foreach($product->productImage as $key => $image)
+                            <div class="carousel-item {{ ($key == 0) ? 'active'  : '' }} ">
+                                <img class="w-100 h-100" src=" {{ asset( '/uploads/product/large/'.$image->image ) }} " alt="{{ $image->alt }}">
+                            </div>
+                            @endforeach
                             @else
-                                 <!-- <img class="w-100 h-100" src="{{asset('/uploads/img/default150x150.png')}}" > -->
-                                <p>No images available for this product.</p>
+                            <!-- <img class="w-100 h-100" src="{{asset('/uploads/img/default150x150.png')}}" > -->
+                            <p>No images available for this product.</p>
                             @endif
                         </div>
                         <a class="carousel-control-prev" href="#product-carousel" data-bs-slide="prev">
@@ -55,12 +55,26 @@
                             <small class="pt-1">(99 Reviews)</small>
                         </div>
                         @if($product->compared_price > 0){
-                           <h2 class="price text-secondary"><del>${{$product->compared_price}}</del></h2>
+                        <h2 class="price text-secondary"><del>${{$product->compared_price}}</del></h2>
                         }
                         @endif
                         <h2 class="price ">${{$product->price}}</h2>
                         <p>{!! $product->short_description !!}</p>
-                        <a href="javascript:void(0);" onclick="addToCart({{ $product->id }})" class="btn btn-dark"><i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART</a>
+                        @if($product->track_qty == 'Yes')
+                        @if($product->qty>0)
+                        <a href="javascript:void(0);" onclick="addToCart({{ $product->id }})" class="btn btn-dark">
+                            <i class="fa fa-shopping-cart"></i> Add To Cart
+                        </a>
+                        @else
+                        <a href="javascript:void(0);" class="btn btn-dark">
+                            <i class="fa fa-shopping-cart"></i> Out of Stock
+                        </a>
+                        @endif
+                        @else
+                        <a href="javascript:void(0);" onclick="addToCart({{ $product->id }})" class="btn btn-dark">
+                            <i class="fa fa-shopping-cart"></i> Add To Cart
+                        </a>
+                        @endif
                     </div>
                 </div>
 
@@ -80,19 +94,19 @@
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
                                 <p>
-                                {!! $product->description !!}
+                                    {!! $product->description !!}
                                 </p>
                             </div>
                             <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
-                            <p> {!! $product->shipping_returns !!} </p>
+                                <p> {!! $product->shipping_returns !!} </p>
                             </div>
                             <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                            
+
                             </div>
                         </div>
                     </div>
-                </div> 
-            </div>           
+                </div>
+            </div>
         </div>
     </section>
     @if( !empty($relatedProducts) )
@@ -100,29 +114,41 @@
         <div class="container">
             <div class="section-title">
                 <h2>Related Products</h2>
-            </div> 
+            </div>
             <div class="col-md-12">
                 <div id="related-products" class="carousel">
                     @foreach($relatedProducts as $relatedProduct)
                     <div class="card product-card">
                         <div class="product-image position-relative">
                             @php
-                                $productImage = $relatedProduct->productImage->first();
+                            $productImage = $relatedProduct->productImage->first();
                             @endphp
                             <a href="{{ route('front.product',$relatedProduct->slug) }}" class="product-img">
                                 @if(!empty($productImage->image))
-                                    <img class="card-img-top" src="{{asset('/uploads/product/small/'.$productImage->image)}}">
+                                <img class="card-img-top" src="{{asset('/uploads/product/small/'.$productImage->image)}}">
                                 @else
-                                    <img class="card-img-top" src="{{asset('/uploads/img/default150x150.png')}}" >
+                                <img class="card-img-top" src="{{asset('/uploads/img/default150x150.png')}}">
                                 @endif
                             </a>
-                            <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                            
+                            <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
                             <div class="product-action">
-                                <a href="javascript:void(0);" onclick="addToCart( {{ $relatedProduct->id }} )" class="btn btn-dark" >
+                                @if($relatedProduct->track_qty == 'Yes')
+                                @if($relatedProduct->qty>0)
+                                <a href="javascript:void(0);" onclick="addToCart({{ $relatedProduct->id }})" class="btn btn-dark">
                                     <i class="fa fa-shopping-cart"></i> Add To Cart
-                                </a>                            
+                                </a>
+                                @else
+                                <a href="javascript:void(0);" class="btn btn-dark">
+                                    <i class="fa fa-shopping-cart"></i> Out of Stock
+                                </a>
+                                @endif
+                                @else
+                                <a href="javascript:void(0);" onclick="addToCart({{ $relatedProduct->id }})" class="btn btn-dark">
+                                    <i class="fa fa-shopping-cart"></i> Add To Cart
+                                </a>
+                                @endif
                             </div>
-                        </div>                        
+                        </div>
                         <div class="card-body text-center mt-3">
                             <a class="h6 link" href="">{{$relatedProduct->title}}</a>
                             <div class="price mt-2">
@@ -131,7 +157,7 @@
                                 <span class="h6 text-underline"><del>${{$relatedProduct->compared_price}}</del></span>
                                 @endif
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                     @endforeach
                 </div>
@@ -143,6 +169,6 @@
 @endsection
 @section('customJs')
 <script type="text/javascript">
-    
+
 </script>
 @endsection

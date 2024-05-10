@@ -78,7 +78,7 @@ Shop
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <input type="text" class="js-range-slider" name="my_range" value="" data-type="double" data-min="0" data-max="1000" data-from="0" data-to="500" data-grid="true" />
+                            <input type="text" class="js-range-slider" name="my_range" value="" data-type="double" data-grid="true" />
                         </div>
                     </div>
                 </div>
@@ -89,9 +89,9 @@ Shop
                                 <div class="ml-2">
                                     <div class="btn-group">
                                         <select name="sort" id="sort" class="from-control">
-                                            <option value="latest" {{($sort == 'latest') ? 'selected' : '' }}>Latest</option>
-                                            <option value="price_desc" {{($sort == 'price_desc') ? 'selected' : '' }}>Price High</option>
-                                            <option value="price_asc" {{($sort == 'price_asc') ? 'selected' : '' }}>Price Low</option>
+                                            <option value="latest" {{ ($sort == 'latest') ? 'selected' : '' }}>Latest</option>
+                                            <option value="price_desc" {{ ($sort == 'price_desc') ? 'selected' : '' }}>Price High</option>
+                                            <option value="price_asc" {{ ($sort == 'price_asc') ? 'selected' : '' }}>Price Low</option>
                                         </select>
                                     </div>
                                 </div>
@@ -114,9 +114,21 @@ Shop
                                     </a>
                                     <a onclick="addToWishlist( {{ $product->id }} )" class="whishlist" href="javascript:void(0);"><i class="far fa-heart"></i></a>
                                     <div class="product-action">
-                                        <a class="btn btn-dark" href="javascript:void(0);" onclick="addToCart({{ $product->id }})">
+                                        @if($product->track_qty == 'Yes')
+                                        @if($product->qty>0)
+                                        <a href="javascript:void(0);" onclick="addToCart({{ $product->id }})" class="btn btn-dark">
                                             <i class="fa fa-shopping-cart"></i> Add To Cart
                                         </a>
+                                        @else
+                                        <a href="javascript:void(0);" class="btn btn-dark">
+                                            <i class="fa fa-shopping-cart"></i> Out of Stock
+                                        </a>
+                                        @endif
+                                        @else
+                                        <a href="javascript:void(0);" onclick="addToCart({{ $product->id }})" class="btn btn-dark">
+                                            <i class="fa fa-shopping-cart"></i> Add To Cart
+                                        </a>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="card-body text-center mt-3">
@@ -148,17 +160,9 @@ Shop
         type: "double",
         min: 0,
         max: 1000,
-        from: {
-            {
-                ($priceMin)
-            }
-        },
+        from: <?php echo json_encode($priceMin); ?>,
         step: 10,
-        to: {
-            {
-                ($priceMax)
-            }
-        },
+        to: <?php echo json_encode($priceMax); ?>,
         skin: "round",
         max_postfix: "+",
         prefix: "$",
@@ -189,7 +193,14 @@ Shop
             url += '&brands=' + brands.toString();
         }
         //price range fileter
-        url += "&price_min=" + slider.result.from + "&price_max=" + slider.result.to;
+        url += '&price_min=' + slider.result.from + '&price_max=' + slider.result.to;
+
+        //sorting filter
+        var keyword = $("#search").val();
+        if (keyword.length > 0) {
+            url += '&search=' + keyword;
+        }
+
         //sroting filter_has_var
         url += '&sort=' + $('#sort').val();
         window.location.href = url;

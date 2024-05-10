@@ -4,7 +4,7 @@ Cart
 @endsection
 @section('body')
 <main>
-   <section class="section-5 pt-3 pb-3 mb-3 bg-white">
+    <section class="section-5 pt-3 pb-3 mb-3 bg-white">
         <div class="container">
             <div class="light-font">
                 <ol class="breadcrumb primary-color mb-0">
@@ -17,7 +17,7 @@ Cart
     <section class=" section-9 pt-4">
         <div class="container">
             <div class="row">
-            @include('front.message.message')
+                @include('front.message.message')
                 @if(Cart::count() >0 )
                 <div class="col-md-8">
                     <div class="table-responsive">
@@ -36,11 +36,11 @@ Cart
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center justify-content-center">
-                                        @if(!empty($item->options->productImage->image))
-                                            <img  src="{{asset('/uploads/product/small/'.$item->options->productImage->image)}}">
-                                        @else
-                                            <img class="card-img-top" src="{{asset('/uploads/img/default150x150.png')}}" >
-                                        @endif
+                                            @if(!empty($item->options->productImage->image))
+                                            <img src="{{asset('/uploads/product/small/'.$item->options->productImage->image)}}">
+                                            @else
+                                            <img class="card-img-top" src="{{asset('/uploads/img/default150x150.png')}}">
+                                            @endif
                                             <h2>{{$item->name}}</h2>
                                         </div>
                                     </td>
@@ -72,11 +72,11 @@ Cart
                         </table>
                     </div>
                 </div>
-                <div class="col-md-4">            
+                <div class="col-md-4">
                     <div class="card cart-summery">
                         <div class="sub-title">
                             <h2 class="bg-white">Cart Summery</h3>
-                        </div> 
+                        </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-between pb-2">
                                 <div>Subtotal</div>
@@ -94,20 +94,16 @@ Cart
                                 <a href="{{ route('checkout') }}" class="btn-dark btn btn-block w-100">Proceed to Checkout</a>
                             </div>
                         </div>
-                    </div>     
-                    <div class="input-group apply-coupan mt-4">
-                        <input type="text" placeholder="Coupon Code" class="form-control">
-                        <button class="btn btn-dark" type="button" id="button-addon2">Apply Coupon</button>
-                    </div> 
+                    </div>
                 </div>
                 @else
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h1 class="text-danger text-center">Your Cart Is Empty!!</h1>
-                            </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h1 class="text-danger text-center">Your Cart Is Empty!!</h1>
                         </div>
                     </div>
+                </div>
                 @endif
             </div>
         </div>
@@ -116,45 +112,52 @@ Cart
 @endsection
 @section('customJs')
 <script>
-    $('.add').click(function(){
-      var qtyElement = $(this).parent().prev(); // Qty Input
-      var qtyValue = parseInt(qtyElement.val());
-      if(qtyValue < 10) {
-            qtyElement.val(qtyValue+1);
-            var rowId   =   $(this).data('id');
-            var newQty    =   qtyElement.val();
-            updateCart(rowId,newQty)
-        }            
-  });
-  $('.sub').click(function(){
-      var qtyElement = $(this).parent().next(); 
-      var qtyValue = parseInt(qtyElement.val());
-      if(qtyValue > 1) {
-            qtyElement.val(qtyValue-1);
-            var rowId   =   $(this).data('id');
-            var newQty    =   qtyElement.val();
-            updateCart(rowId,newQty)
-        }        
+    $('.add').click(function() {
+        var qtyElement = $(this).parent().prev(); // Qty Input
+        var qtyValue = parseInt(qtyElement.val());
+        if (qtyValue < 10) {
+            qtyElement.val(qtyValue + 1);
+            var rowId = $(this).data('id');
+            var newQty = qtyElement.val();
+            updateCart(rowId, newQty)
+        }
     });
-    function updateCart(rowId,qty){
+    $('.sub').click(function() {
+        var qtyElement = $(this).parent().next();
+        var qtyValue = parseInt(qtyElement.val());
+        if (qtyValue > 1) {
+            qtyElement.val(qtyValue - 1);
+            var rowId = $(this).data('id');
+            var newQty = qtyElement.val();
+            updateCart(rowId, newQty)
+        }
+    });
+
+    function updateCart(rowId, qty) {
         $.ajax({
-            url:'{{ route("front.updateCart") }}',
-            type:'post',
-            data:{rowId:rowId, qty:qty},
-            dataType:'json',
-            success:function(response){
+            url: '{{ route("front.updateCart") }}',
+            type: 'post',
+            data: {
+                rowId: rowId,
+                qty: qty
+            },
+            dataType: 'json',
+            success: function(response) {
                 window.location.href = '{{ route("cart") }}';
             }
         });
     }
-    function removeItem(rowId){
-        if(confirm('Are You Sure Remove This Item?')){
+
+    function removeItem(rowId) {
+        if (confirm('Are You Sure Remove This Item?')) {
             $.ajax({
-                url:'{{ route("front.removeCart") }}',
-                type:'post',
-                data:{rowId:rowId},
-                dataType:'json',
-                success:function(response){
+                url: '{{ route("front.removeCart") }}',
+                type: 'post',
+                data: {
+                    rowId: rowId
+                },
+                dataType: 'json',
+                success: function(response) {
                     window.location.href = '{{ route("cart") }}';
                 }
             });

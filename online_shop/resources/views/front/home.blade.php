@@ -46,6 +46,8 @@
 
    <!-- Fav Icon -->
    <link rel="shortcut icon" type="image/x-icon" href="#" />
+   <!--This link from admin site css-->
+
    <link rel="stylesheet" href="{{asset('../adminAsset/plugins/select2/css/select2.min.css')}}">
 
 </head>
@@ -79,14 +81,15 @@
          </div>
       </div>
    </div>
-   <script src="{{ asset('front-assets/js/jquery-3.6.0.min.js')}}"></script>
-   <script src="{{ asset('front-assets/js/bootstrap.bundle.5.1.3.min.js')}}"></script>
-   <script src="{{ asset('front-assets/js/instantpages.5.1.0.min.js')}}"></script>
-   <script src="{{ asset('front-assets/js/lazyload.17.6.0.min.js')}}"></script>
-   <script src="{{ asset('front-assets/js/slick.min.js')}}"></script>
-   <script src="{{ asset('front-assets/js/custom.js')}}"></script>
-   <script src="{{ asset('front-assets/js/ion.rangeSlider.min.js')}}"></script>
-   <script src="{{asset('../adminAsset/plugins/select2/js/select2.min.js')}}"></script>
+   <script src="{{ asset('front-assets/js/jquery-3.6.0.min.js') }}"></script>
+   <!-- <script src="{{asset('front-assets/js/jquery-3.7.1.min.js')}}"></script> -->
+   <script src="{{ asset('front-assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
+   <script src="{{ asset('front-assets/js/instantpages.5.1.0.min.js') }}"></script>
+   <script src="{{ asset('front-assets/js/lazyload.17.6.0.min.js') }}"></script>
+   <script src="{{ asset('front-assets/js/slick.min.js') }}"></script>
+   <script src="{{ asset('front-assets/js/custom.js') }}"></script>
+   <script src="{{ asset('front-assets/js/ion.rangeSlider.min.js') }}"></script>
+   <script src="{{asset('../adminAsset/plugins/select2/js/select2.min.js') }}"></script>
    <script type="text/javascript">
       $.ajaxSetup({
          headers: {

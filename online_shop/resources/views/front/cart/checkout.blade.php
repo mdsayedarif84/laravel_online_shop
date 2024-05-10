@@ -48,7 +48,7 @@ Checkout
                            <div class="col-md-12">
                               <h2 class="h5 mb-3">Search a Country</h2>
                               <div class="mb-3">
-                                 <select name="country" id="country" class="form-control">
+                                 <select name="country" id="country" class="form-select" aria-label="Default select example">
                                     <option value="">Select a Country</option>
                                     @if($countries->isNotEmpty())
                                     @foreach($countries as $country)
