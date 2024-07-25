@@ -164,11 +164,6 @@ class AuthController extends Controller
             ]
         );
         if ($validator->passes()) {
-            // $user     =   User::find($userId);
-            // $user->name =   $request->name;
-            // $user->email =   $request->email;
-            // $user->phone =   $request->phone;
-            // $user->save();
             CustomerAddress::updateOrCreate(
                 ['user_id' => $userId],
                 [
@@ -204,16 +199,7 @@ class AuthController extends Controller
         Auth::logout();
         return redirect()->route('login')->with('success', $message);
     }
-    public function userList(Request $request)
-    {
-        $users      =   User::latest();
-        $keyword    =   $request->get('keyword');
-        if (!empty($keyword)) {
-            $users  = $users->where('name', 'like', '%' . $keyword . '%');
-        }
-        $users      =   $users->paginate(3);
-        return view('admin.users.user_list', compact('users'));
-    }
+
     public function orders()
     {
         $data   =   [];
@@ -265,6 +251,54 @@ class AuthController extends Controller
             return response()->json([
                 'status'    => true,
                 'message'   => $message
+            ]);
+        }
+    }
+    //front page user account login password change function
+    public function changePasswordForm()
+    {
+        return view('front.customer-account.change-password.change_password');
+    }
+    public function changePassword(Request $request)
+    {
+        $validator      =   Validator::make(
+            $request->all(),
+            [
+                'old_password' => 'required',
+                'new_password' => 'required|min:3',
+                'confirm_password' => 'required|same:new_password',
+            ],
+            [
+                'old_password.required'     => 'Enter Your Old Passowrd!',
+                'new_password.required'     => 'Enter Your New Password!',
+                'confirm_password.required' => 'Enter Retype new Password!',
+            ]
+        );
+        if ($validator->passes()) {
+            $user   =   User::select('id', 'password')->where('id', Auth::user()->id)->first();
+            if (!Hash::check($request->old_password, $user->password)) {
+                // $message                =   'Your Old Password is incorrect!, Please Try Again';
+                session()->flash('error', 'Your Old Password is incorrect!, Please Try Again');
+                return response()->json([
+                    'status'    => true,
+                    // 'message'   => $message
+                    'message'   => $validator->errors()
+                ]);
+            }
+            User::where('id', $user->id)->update([
+                'password'  =>    Hash::make($request->new_password)
+            ]);
+            $message                =   'Password Update Successfully!';
+            session()->flash('success', $message);
+            return response()->json([
+                'status'    => true,
+                'message'   => $message
+            ]);
+            // dd($user);
+        } else {
+            return response()->json([
+                'status'    => false,
+                'errors'    => $validator->errors(),
             ]);
         }
     }

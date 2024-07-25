@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Front\Home;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ContactMail;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\Wishlist;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 
 class FrontController extends Controller
 {
@@ -65,5 +70,44 @@ class FrontController extends Controller
             'status'    => true,
             'message'   => $message
         ]);
+    }
+    public function page($slug)
+    {
+        $page   =   Page::where('slug', $slug)->first();
+        if ($page == null) {
+            abort(404);
+        }
+        return view('front.page.page', ['page' => $page]);
+    }
+    public function sendContactEmail(Request $request)
+    {
+        $validator  =   Validator::make(
+            $request->all(),
+            [
+                'name' => 'required',
+                'email' => 'required|email',
+                'subject' => 'required|min:3',
+            ],
+            [
+                'name.required'     => 'Enter Your Name!',
+                'email.required'     => 'Enter Your Valid Email!',
+                'subject.required' => 'Write Your Subject!',
+            ]
+        );
+        if ($validator->passes()) {
+            $mailData   =   [
+                'name'  =>  $request->name,
+                'email'  =>  $request->email,
+                'subject'  =>  $request->subject,
+                'message'  =>  $request->message,
+            ];
+            $admin  =   User::where('id', 2)->first();
+            Mail::to($admin->email)->send(new ContactMail($mailData));
+        } else {
+            return response()->json([
+                'status'    =>   false,
+                'errors'   =>   $validator->errors()
+            ]);
+        }
     }
 }

@@ -91,6 +91,14 @@
 
 		});
 	</script>
+	<script>
+		$(function() {
+			// Summernote
+			$('.summernote').summernote({
+				height: '300px'
+			});
+		});
+	</script>
 	@yield('customJs')
 </body>
 
