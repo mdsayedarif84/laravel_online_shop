@@ -354,5 +354,27 @@ class AuthController extends Controller
     }
     public function resetPasswordProcess(Request $request)
     {
+        $token  =   $request->token;
+        // return $token;
+        $tokenObj =   DB::table('password_reset_tokens')->where('token', $token)->first();
+        if ($tokenObj == null) {
+            return redirect()->route('account.forgot-password-form')->with('error', 'Invalid Request!');
+        }
+        $user   =   User::where('email', $tokenObj->email)->first();
+        $validator      =   Validator::make(
+            $request->all(),
+            [
+                'new_password'      => 'required|min:5',
+                'confirm_password'  => 'required|same:new_password',
+            ]
+        );
+        if ($validator->fails()) {
+            return redirect()->route('account.reset-password', $token)->withErrors($validator);
+        }
+        User::where('id', $user->id)->update([
+            'password'  =>  Hash::make($request->new_password),
+        ]);
+        DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+        return redirect()->route('login')->with('success', 'Reset password Successfully!');;
     }
 }

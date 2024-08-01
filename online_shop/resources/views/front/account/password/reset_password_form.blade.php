@@ -19,23 +19,31 @@ Reset Password Form
       <div class="container">
          @include('front.message.message')
          <div class="login-form">
-            <form action="{{route('account.process-forgot-password')}}" method="post">
+            <form action="{{route('account.process-reset-password')}}" method="post">
                @csrf
                <input type="hidden" name="token" value="{{ $token }}">
                <h4 class="modal-title text-info">Reset Password Form</h4>
                <div class="mb-3">
                   <label for="name">New Password</label>
-                  <input type="password" name="new_password" id="new_password" placeholder="New Password" class="form-control">
-                  <p></p>
+                  <input type="password" name="new_password" id="new_password" placeholder="New Password" class="form-control @error('new_password') is-invalid @enderror ">
+                  @error('new_password')
+                  <p class=" invalid-feedback">{{ $message}}</p>
+                  @enderror
                </div>
                <div class="mb-3">
                   <label for="name">Confirm Password</label>
-                  <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" class="form-control">
-                  <p></p>
+                  <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" class="form-control @error('confirm_password') is-invalid @enderror ">
+                  @error('confirm_password')
+                  <p class=" invalid-feedback">{{ $message}}</p>
+                  @enderror
                </div>
-               <input type="submit" class="btn btn-dark btn-block btn-lg" value="Submit">
+               <input type="submit" class="btn btn-dark btn-block btn-lg" value="Update Password">
             </form>
-            <div class="text-center small"><a href="{{ route('login')}}">Update Password</a></div>
+            <div class="text-center">
+               <button class="btn btn-dark">
+                  <a href="{{ route('login')}}" class="text-danger">Login</a>
+               </button>
+            </div>
          </div>
       </div>
    </section>

@@ -23,7 +23,7 @@ Login
                     @csrf
                     <h4 class="modal-title">Login to Your Account</h4>
                     <div class="form-group">
-                        <input type="text" name="email" value="{{old('email')}}" class="form-control @error('email') is-invalid @enderror" placeholder="Email">
+                        <input type="text" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email">
                         @error('email')
                         <p class="invalid-feedback">{{ $message}}</p>
                         @enderror
