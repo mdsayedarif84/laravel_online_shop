@@ -47,6 +47,8 @@ Route::post('/add-to-wishlist', [FrontController::class, 'addToWishlist'])->name
 Route::get('/page/{slug}', [FrontController::class, 'page'])->name('front.page');
 Route::post('/send-contact-email', [FrontController::class, 'sendContactEmail'])->name('front.sendContactEmail');
 
+
+
 // Route::get('/get-country', [CartController::class, 'getCountries'])->name('get.countries');
 
 
@@ -56,6 +58,11 @@ Route::group(['prefix' => 'account'], function () {
         Route::post('/authenticate-login', [AuthController::class, 'authenticate'])->name('authenticate');
         Route::get('/register', [AuthController::class, 'register'])->name('register');
         Route::post('/process-register', [AuthController::class, 'processRegister'])->name('process-register');
+        //fogot password
+        Route::get('/forgot-password-form', [AuthController::class, 'forgotPasswordForm'])->name('account.forgot-password-form');
+        Route::post('/process-forgot-password', [AuthController::class, 'ProcessforgotPassword'])->name('account.process-forgot-password');
+        Route::get('/reset-password/{token}', [AuthController::class, 'resetPassword'])->name('account.reset-password');
+        Route::post('/process-reset-password', [AuthController::class, 'resetPasswordProcess'])->name('account.process-reset-password');
     });
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/profile', [AuthController::class, 'profile'])->name('account.profile');

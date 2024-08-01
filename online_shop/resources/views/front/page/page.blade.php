@@ -14,6 +14,7 @@ Page
          </div>
       </div>
    </section>
+   @include('admin.message.message')
    @if($page->slug == 'contact-us')
    <main>
       <section class=" section-10">
@@ -81,7 +82,7 @@ Page
 <script>
    $('#contactForm').submit(function(e) {
       e.preventDefault();
-      $("#submit").prop('disabled', true);
+      // $("#submit").prop('disabled', true);
       var data = $(this).serializeArray();
       $.ajax({
          url: '{{route("front.sendContactEmail")}}',
@@ -90,9 +91,9 @@ Page
          dataType: 'json',
          success: function(response) {
             $("#submit").prop('disabled', false);
-            if (response["status"] == true) {
+            if (response['status'] == true) {
 
-               // window.location.href = "{{ route('admin.password-change-form') }}";
+               window.location.href = "{{ route('front.page',$page->slug) }}";
             } else {
                var errors = response.errors;
                if (errors.name) {

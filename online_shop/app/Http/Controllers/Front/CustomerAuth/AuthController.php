@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front\CustomerAuth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ResetPasswordMail;
 use App\Models\Country;
 use App\Models\CustomerAddress;
 use App\Models\Order;
@@ -12,17 +13,20 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Wishlist;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
     public function login()
     {
-        return view('front.customer-account.customer_login');
+        return view('front.account.customer_login');
     }
     public function register()
     {
-        return view('front.customer-account.customer_register');
+        return view('front.account.customer_register');
     }
     public function processRegister(Request $request)
     {
@@ -100,7 +104,7 @@ class AuthController extends Controller
         $user           =   User::where('id', $userId)->first();
         $countries      =   Country::orderBY('name', 'ASC')->get();
         $customerAdds   =   CustomerAddress::where('user_id', $userId)->first();
-        return view('front.customer-account.profile', compact('user', 'countries', 'customerAdds'));
+        return view('front.account.profile', compact('user', 'countries', 'customerAdds'));
     }
     public function updateProfile(Request $request)
     {
@@ -208,7 +212,7 @@ class AuthController extends Controller
         $orders =   Order::where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
         $data['orders'] =   $orders;
         // $orders      =   $orders->paginate(5);
-        return view('front.customer-account.order', $data);
+        return view('front.account.order', $data);
     }
     public function orderDetails($id)
     {
@@ -222,7 +226,7 @@ class AuthController extends Controller
 
         $orderitemsCount =   OrderItem::where('order_id', $id)->count();
         $data['orderitemsCount'] =   $orderitemsCount;
-        return view('front.customer-account.order_details', $data);
+        return view('front.account.order_details', $data);
     }
     public function wishlist()
     {
@@ -231,7 +235,7 @@ class AuthController extends Controller
         $data       =   [];
         $data['whishlists']       =   $whishlists;
         // return $data;
-        return view('front.customer-account.wishlist.wishlist', $data);
+        return view('front.account.wishlist.wishlist', $data);
     }
     public function removeProductFromWishlist(Request $request)
     {
@@ -257,7 +261,7 @@ class AuthController extends Controller
     //front page user account login password change function
     public function changePasswordForm()
     {
-        return view('front.customer-account.change-password.change_password');
+        return view('front.account.password.change_password');
     }
     public function changePassword(Request $request)
     {
@@ -301,5 +305,54 @@ class AuthController extends Controller
                 'errors'    => $validator->errors(),
             ]);
         }
+    }
+    public function forgotPasswordForm()
+    {
+        return view('front.account.password.forgot_password');
+    }
+    public function ProcessforgotPassword(Request $request)
+    {
+        $validator      =   Validator::make(
+            $request->all(),
+            [
+                'email' => 'required|email|exists:users,email',
+            ],
+            [
+                'email.required'     => 'Email is not exist in database!',
+            ]
+        );
+        if ($validator->fails()) {
+            return redirect()->route('account.forgot-password-form')->withInput()->withErrors($validator);
+        }
+        $token  =   Str::random(60);
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        DB::table('password_reset_tokens')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => now(),
+        ]);
+
+        //send email
+        $user   =   User::where('email', $request->email)->first();
+        $formData   =   [
+            'token' =>  $token,
+            'user'  =>  $user,
+            'mail_subject'  =>  'You Have Requested To Reset Your Password!'
+        ];
+        Mail::to($request->email)->send(new ResetPasswordMail($formData));
+        return redirect()->route('account.forgot-password-form')->with('success', 'Please check your inbox to reset password');
+    }
+    public function resetPassword($token)
+    {
+        $tokenExist =   DB::table('password_reset_tokens')->where('token', $token)->first();
+        // return $tokenExist;
+        if ($tokenExist == null) {
+            return redirect()->route('account.forgot-password-form')->with('error', 'Invalid Request!');
+        }
+
+        return view('front.account.password.reset_password_form', ['token' => $token]);
+    }
+    public function resetPasswordProcess(Request $request)
+    {
     }
 }

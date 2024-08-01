@@ -100,9 +100,16 @@ class FrontController extends Controller
                 'email'  =>  $request->email,
                 'subject'  =>  $request->subject,
                 'message'  =>  $request->message,
+                'mail_subject' => 'You Have Received A Contact Mail',
             ];
-            $admin  =   User::where('id', 2)->first();
+            $admin  =   User::where('id', 1)->first();
             Mail::to($admin->email)->send(new ContactMail($mailData));
+            $message    =   "Thanks for Contacting us! we will get back to you soon";
+            session()->flash('success', $message);
+            return response()->json([
+                'status'    =>   true,
+                'message'   =>   $message
+            ]);
         } else {
             return response()->json([
                 'status'    =>   false,

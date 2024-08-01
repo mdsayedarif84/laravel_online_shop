@@ -9,18 +9,17 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ContactMail extends Mailable
+class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $mailData;
-
+    public $formData;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($mailData)
+    public function __construct($formData)
     {
-        $this->mailData =   $mailData;
+        $this->formData =   $formData;
     }
 
     /**
@@ -29,7 +28,7 @@ class ContactMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->mailData['mail_subject'],
+            subject: $this->formData['mail_subject'],
         );
     }
 
@@ -39,7 +38,7 @@ class ContactMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'email.contact',
+            view: 'email.reset_password_link',
         );
     }
 
