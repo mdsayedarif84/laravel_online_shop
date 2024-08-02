@@ -8,7 +8,7 @@
 	@include('admin.link.css')
 </head>
 
-<body class="hold-transition login-page">
+<body class="hold-transition login-page" style="background-image: url('{{asset('./adminAsset/img/photo1.png')}}');">
 	<div class="login-box">
 		<!-- /.login-logo -->
 		@include('admin.message.message')
