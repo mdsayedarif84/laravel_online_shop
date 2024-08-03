@@ -81,7 +81,7 @@ Admin Dashboard
 				<div class="col-lg-4 col-6">
 					<div class="small-box card">
 						<div class="inner">
-							<h3>{{number_format($thisMnRevenue,2)}}</h3>
+							<h3>TK. {{number_format($thisMnRevenue,2)}}</h3>
 							<p>This Month Revenue</p>
 						</div>
 						<div class="icon">
@@ -94,7 +94,7 @@ Admin Dashboard
 				<div class="col-lg-4 col-6">
 					<div class="small-box card">
 						<div class="inner">
-							<h3>{{number_format($lastMnRevenue,2)}}</h3>
+							<h3>TK. {{number_format($lastMnRevenue,2)}}</h3>
 							<p>Last Month Revenue ( {{$lastMnName}} ) </p>
 						</div>
 						<div class="icon">
@@ -106,7 +106,7 @@ Admin Dashboard
 				<div class="col-lg-4 col-6">
 					<div class="small-box card">
 						<div class="inner">
-							<h3>{{number_format($lastThirtyDays,2)}}</h3>
+							<h3> TK.{{number_format($lastThirtyDays,2)}}</h3>
 							<p>Last 30 Days Sale</p>
 						</div>
 						<div class="icon">

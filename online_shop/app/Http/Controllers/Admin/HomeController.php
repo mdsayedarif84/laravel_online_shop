@@ -20,16 +20,16 @@ class HomeController extends Controller
         $totalRevenue       =   Order::where('status', '!=', 'cancelled')->sum('grand_total');
 
         //This month revenue
-        $startOfMonth       =   Carbon::now()->startOfMonth()->format('Y - m - d');
-        $currentDate        =   Carbon::now()->format('Y - m - d');
+        $startOfMonth       =   Carbon::now()->startOfMonth()->format('Y-m-d');
+        $currentDate        =   Carbon::now()->format('Y-m-d');
         $thisMnRevenue      =   Order::where('status', '!=', 'cancelled')
             ->whereDate('created_at', '>=', $startOfMonth)
             ->whereDate('created_at', '<=', $currentDate)
             ->sum('grand_total');
 
         // last mont revenue 
-        $lastMnStartDate    =   Carbon::now()->subMonth()->startOfMonth()->format('Y - m - d');
-        $lastMnEndDate      =   Carbon::now()->subMonth()->endOfMonth()->format('Y - m - d');
+        $lastMnStartDate    =   Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
+        $lastMnEndDate      =   Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
         $lastMnName    =   Carbon::now()->subMonth()->startOfMonth()->format('M');
 
         $lastMnRevenue      =   Order::where('status', '!=', 'cancelled')
@@ -38,7 +38,7 @@ class HomeController extends Controller
             ->sum('grand_total');
 
         //last 30 day sale
-        $lastThirtyStartDays    =   Carbon::now()->subDays(30)->format('Y - m - d');
+        $lastThirtyStartDays    =   Carbon::now()->subDays(30)->format('Y-m-d');
         $lastThirtyDays      =   Order::where('status', '!=', 'cancelled')
             ->whereDate('created_at', '>=', $lastThirtyStartDays)
             ->whereDate('created_at', '<=', $currentDate)
