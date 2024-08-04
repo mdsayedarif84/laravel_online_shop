@@ -46,6 +46,9 @@ Route::post('/remove-discount', [CartController::class, 'removeCoupon'])->name('
 Route::post('/add-to-wishlist', [FrontController::class, 'addToWishlist'])->name('front.addToWishlist');
 Route::get('/page/{slug}', [FrontController::class, 'page'])->name('front.page');
 Route::post('/send-contact-email', [FrontController::class, 'sendContactEmail'])->name('front.sendContactEmail');
+//product rating
+Route::post('/save-rating/{productId}', [ShopController::class, 'productRating'])->name('front.saveProductRating');
+
 
 
 
@@ -124,6 +127,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::put('/product/{id}/update', [ProductController::class, 'update'])->name('product.update');
         Route::delete('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
         Route::get('/get-products', [ProductController::class, 'getProducts'])->name('get.products');
+        Route::get('/ratings-list', [ProductController::class, 'rating'])->name('products.productRatingList');
+        Route::get('/change-rating-status', [ProductController::class, 'changeRatingSatus'])->name('changeRatingStatus');
 
         Route::get('/product-subCategories', [ProductSubCategoryController::class, 'index'])->name('product-subCategories.index');
         Route::post('/product-image/update', [ProductImageController::class, 'update'])->name('product-image.update');

@@ -14,7 +14,7 @@ Page
          </div>
       </div>
    </section>
-   @include('admin.message.message')
+   @include('front.message.message')
    @if($page->slug == 'contact-us')
    <main>
       <section class=" section-10">
@@ -92,7 +92,6 @@ Page
          success: function(response) {
             $("#submit").prop('disabled', false);
             if (response['status'] == true) {
-
                window.location.href = "{{ route('front.page',$page->slug) }}";
             } else {
                var errors = response.errors;

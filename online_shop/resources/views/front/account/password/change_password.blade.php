@@ -31,17 +31,17 @@ Change Password
                         <div class="row">
                            <div class="mb-3">
                               <label for="name">Old Password</label>
-                              <input type="password" value="{{old('old_password')}}" name="old_password" id="old_password" placeholder="Old Password" class="form-control">
+                              <input type="password" name="old_password" id="old_password" placeholder="Old Password" class="form-control">
                               <p></p>
                            </div>
                            <div class="mb-3">
                               <label for="name">New Password</label>
-                              <input type="password" value="{{old('new_password')}}" name="new_password" id="new_password" placeholder="New Password" class="form-control">
+                              <input type="password" name="new_password" id="new_password" placeholder="New Password" class="form-control">
                               <p></p>
                            </div>
                            <div class="mb-3">
                               <label for="name">Confirm Password</label>
-                              <input type="password" value="{{old('confirm_password')}}" name="confirm_password" id="confirm_password" placeholder="Confirm Password" class="form-control">
+                              <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" class="form-control">
                               <p></p>
                            </div>
                            <div class="d-flex">
